@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
 exports.upload = multer({ storage: storage });
 
 exports.createUser = async (req, res) => {
-    const { brokerageName, officeAddress, city, country, firstName, lastName, phone, gender, image, email, password, trakheesiNumber, ORN, reraNumber, BRN, organizationName, role } = req.body;
+    const { brokerageName, officeAddress, city, country, firstName, lastName, phone, gender, profilPic, email, password, trakheesiNumber, ORN, reraNumber, BRN, organizationName, role } = req.body;
     try {
         let imagePath = "";
         if (req.file) {
@@ -49,8 +49,9 @@ exports.createUser = async (req, res) => {
             firstName,
             lastName,
             phone,
+            ladlinePhone,
             gender,
-            image:imagePath,
+            profilPic:imagePath,
             email,
             password:hashPlainText,
             trakheesiNumber,
@@ -84,7 +85,6 @@ exports.createUser = async (req, res) => {
 // Find a single user with an id
 exports.finduser = async (req, res) => {
     try {
-
         const id = req.params.id ? req.params.id : req.userId;
         if (!id) {
             res.status(201).send({ message: 'id is required !' })
@@ -110,58 +110,53 @@ exports.finduser = async (req, res) => {
             subError: error.message
         })
     }
-
-
 };
 
-// exports.updateUser = async (req, res) => {
-//     try {
-
-//         const id = req.params.id ? req.params.id : req.userId;
-//         const body = req.body;
-
-
-//         if (!id) {
-//             res.status(201).send({ message: 'id is required !' })
-//             return
-//         }
-//         if (!body) {
-//             res.status(201).send({
-//                 message: 'body should not be empty !'
-//             })
-//             return
-//         }
-//         const user = await User.findOne({ where: { id: id, isDeleted: false } });
-//         if (!user) {
-//             res.status(201).send({ message: 'user not found' })
-//             return
-//         }
-//         body['updatedBy'] = req.userId
-//         await User.update(body, { where: { id: id } }).then(num => {
-//             if (num == 1) {
-//                 res.send({
-//                     message: "user updated successfully !"
-//                 });
-//             } else {
-//                 res.send({
-//                     message: `Cannot update user with id=${id}. Maybe user was not found !`
-//                 });
-//             }
-//         }).catch(err => {
-//             res.status(500).send({
-//                 message: "Error update user with id=" + id,
-//                 subError: err.message
-//             });
-//         });
-
-//     } catch (error) {
-//         res.status(400).send({
-//             message: 'Oops! something went wrong in update the user',
-//             subError: error.message
-//         })
-//     }
-// }
-
+exports.findAllUserWithSearch = async(req,res)=>{
+    try{
+      const filter = req.query.search;
+      var condition = filter ? { 
+        [Op.or]:[ { email: filter }],
+        [Op.and]:[{isDeleted:false }]
+      }  : {isDeleted:false };
+  
+     const users = await User.findAll({ where: condition });
+     console.log("..................",users);
+     if(users.length === 0){
+        res.status(200).send({
+          message:'No result found !'
+        })
+        return
+      }
+      
+  
+      if(users.length === 0){
+        res.status(201).send({
+          message:'users not found !',
+            data:pages
+        })
+        return
+      }
+        for(var i= 0 ; i< users.length ;i++){
+            console.log("==================",users[i]);
+          const roleid = users[i].dataValues.role
+          const role = await Role.findOne({where:{id:roleid}, attributes: {exclude: ['isDeleted']},});
+          users[i].dataValues.role = role
+        }
+  
+      // const role = await Role.findOne({where:{id:users.role}, attributes: {exclude: ['isDeleted']},});
+      // users.role= role
+      
+      res.status(200).send(users) 
+      
+    }catch(error){
+      res.status(400).send({
+        message:'Oops! something went wrong while fetching the users',
+        subError:error.message
+      })
+    }
+  }
+  
 exports.updateUser = async (req, res) => {
     try {
   
@@ -176,6 +171,7 @@ exports.updateUser = async (req, res) => {
       const id = req.params.id;
         try {
           User.findOne({  where: { id: id, isDeleted:false} }).then(userdata => {
+            console.log(userdata,";;;;;");
             if (!userdata) {
               res.status(400).send({ message: 'user not found' })
             } 
@@ -188,8 +184,9 @@ exports.updateUser = async (req, res) => {
                     firstName:body.firstName,
                     lastName:body.lastName,
                     phone:body.phone,
+                    ladlinePhone:body.ladlinePhone,
                     gender:body.gender,
-                    image:imagePath,
+                    profilPic:imagePath,
                     email:body.email,
                     trakheesiNumber:body.trakheesiNumber,
                     ORN:body.ORN,
@@ -200,11 +197,12 @@ exports.updateUser = async (req, res) => {
                 };
         
               if (req.file === undefined) {
-                userRequest.image = userdata.image
+                userRequest.profilPic = userdata.dataValues.profilPic
               }
   
                User.update(userRequest, { where: { id: id } }).then(updatedData => {
-                res.status(200).send({ message: 'user details updated successfully..' })
+                
+                res.status(200).send({ message: 'user details updated successfully..' ,data:updatedData})
               }).catch(err => {
                 res.status(400).send({ errMessage: "user not updated ", subError: err.message })
               })
@@ -223,3 +221,5 @@ exports.updateUser = async (req, res) => {
     }
   
   };
+
+ 
