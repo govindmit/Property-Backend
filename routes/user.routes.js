@@ -5,12 +5,11 @@ module.exports = app => {
   app.use(express.static(__dirname + '/public'));
   app.use('/upload', express.static('upload'))
 
-  router.post("/createuser", upload.single("profilPic"), createUser);
-
-
   router.get("/getusers", findAllUserWithSearch);
+  router.post("/createuser", upload.single("profilPic"), createUser);
   router.get("/:id?", finduser);
   router.put("/:id?", upload.single("profilPic"), updateUser);
+  router.delete("/deleteuser/:id?", deleteUser);
 
 
   app.use('/api/user', router);
