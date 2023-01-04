@@ -386,6 +386,7 @@ exports.forgotPassword = async (req, res) => {
 exports.resetPassword = async(req,res)=>{
     try{
         //   console.log("req.userid", req.userId);
+        
          const {old_password , new_password , confirm_password} = req.body ;
             console.log("req.body ======> ",req.body);
          if(!old_password || !new_password || !confirm_password){
