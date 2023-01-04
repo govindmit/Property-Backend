@@ -1,7 +1,7 @@
 // module.exports = {
 //   HOST: "localhost",
 //   USER: "root",
-//   PASSWORD: "Varun@123",
+//   PASSWORD: "Ankita@12",
 //   DB: "propter",
 //   dialect: "mysql",
 //   pool: {
@@ -11,6 +11,8 @@
 //     idle: 10000
 //   }
 // };
+
+
 module.exports = {
   HOST: "localhost",
   USER: "root",
