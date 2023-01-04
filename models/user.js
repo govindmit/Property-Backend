@@ -52,11 +52,22 @@ module.exports = (sequelize, DataTypes) => {
                     },
                 },
             },
+            ladlinePhone: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                validate: {
+                    checkLength(value) {
+                        if (value.length >= 11) {
+                            throw new Error("phone number not valid !");
+                        }
+                    },
+                },
+            },
             gender: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            image: {
+            profilPic: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },

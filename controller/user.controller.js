@@ -135,53 +135,6 @@ exports.finduser = async (req, res) => {
   }
 };
 
-// exports.updateUser = async (req, res) => {
-//     try {
-
-//         const id = req.params.id ? req.params.id : req.userId;
-//         const body = req.body;
-
-//         if (!id) {
-//             res.status(201).send({ message: 'id is required !' })
-//             return
-//         }
-//         if (!body) {
-//             res.status(201).send({
-//                 message: 'body should not be empty !'
-//             })
-//             return
-//         }
-//         const user = await User.findOne({ where: { id: id, isDeleted: false } });
-//         if (!user) {
-//             res.status(201).send({ message: 'user not found' })
-//             return
-//         }
-//         body['updatedBy'] = req.userId
-//         await User.update(body, { where: { id: id } }).then(num => {
-//             if (num == 1) {
-//                 res.send({
-//                     message: "user updated successfully !"
-//                 });
-//             } else {
-//                 res.send({
-//                     message: `Cannot update user with id=${id}. Maybe user was not found !`
-//                 });
-//             }
-//         }).catch(err => {
-//             res.status(500).send({
-//                 message: "Error update user with id=" + id,
-//                 subError: err.message
-//             });
-//         });
-
-//     } catch (error) {
-//         res.status(400).send({
-//             message: 'Oops! something went wrong in update the user',
-//             subError: error.message
-//         })
-//     }
-// }
-
 exports.updateUser = async (req, res) => {
   try {
     let imagePath = "";
