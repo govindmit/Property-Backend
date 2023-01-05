@@ -1,5 +1,6 @@
 const jsonwebtoken = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+
 require('dotenv').config();
 
 
@@ -29,3 +30,23 @@ exports.isValidPassword = async (submittedPassword, storedPassword) => {
     }
 };
 
+
+  exports.webProtected = async (req,res,next)=>{
+    try{
+        let token;
+        if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+              token = req.headers.authorization.split(" ")[1];
+              var decode = jsonwebtoken.verify(token,"websecret")
+              next();
+        }else{
+            res.status(400).send({
+                message:'please provide auth token'
+               })
+        }  
+    }catch(error){
+        res.status(400).send({
+            message:"Oops! something went wrong Auth token is expired!",
+            subError:error.message
+        })
+    }
+};

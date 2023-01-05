@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/govindmit/Property-Backend#readme",
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "axios": "^1.2.2",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.1",
@@ -29,6 +30,7 @@
     "multer": "^1.4.5-lts.1",
     "mysql2": "^2.3.3",
     "nodemon": "^2.0.20",
+    "sendmail": "^1.6.1",
     "sequelize": "^6.28.0"
   }
 }
