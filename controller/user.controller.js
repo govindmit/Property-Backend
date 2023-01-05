@@ -11,6 +11,8 @@ const Role = db.role;
 const Op = db.Sequelize.Op;
 const fromEMail = "varun.mangoit@gmail.com";
 const sendmail = require("sendmail")();
+const jsonwebtoken = require('jsonwebtoken');
+
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -527,4 +529,11 @@ exports.deleteUser = async (req, res) => {
             subError: error.message
         })
     }
+}
+
+exports.getAuthToken = async(req,res)=>{
+  const token = jsonwebtoken.sign({},'websecret',{expiresIn: "24h"});
+  res.status(200).send({
+    authToken:token
+  });
 }

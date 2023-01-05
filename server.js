@@ -28,20 +28,19 @@ db.sequelize.sync()
   });
 app.use(cors(corsOptions));
 
-app.get("/", (req, res) => {
-    res.json({ message: "Backend Api is working fine!" });
-});
 
 require("./routes/role.routes")(app);
 require("./routes/user.routes")(app);
 
+app.get("/", (req, res) => {
+    res.json({ message: "Backend Api is working fine!" });
+});
 
 
 app.use(express.json());
-
 app.use(express.urlencoded({ extended: true }));
 
-const PORT = process.env.PORT || 5005;
+const PORT = process.env.PORT || 6000;
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
