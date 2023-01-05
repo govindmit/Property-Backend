@@ -24,3 +24,4 @@ module.exports = app => {
 
   app.use("/api/user", router);
 };
+
