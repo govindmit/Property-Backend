@@ -13,14 +13,17 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     idle: dbConfig.pool.idle
   }
 });
-
 const db = {};
 
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.Role = require("./role")(sequelize,Sequelize);
+
+db.role = require("./role")(sequelize,Sequelize);
 db.User = require("./user")(sequelize,Sequelize);
+
+db.role.hasMany(db.User, {foreignKey: 'role'});
+db.User.belongsTo(db.role, {foreignKey: 'role'})
 
 
 module.exports = db;

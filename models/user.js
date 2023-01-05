@@ -17,9 +17,6 @@ module.exports = (sequelize, DataTypes) => {
             brokerageName: {
                 type: DataTypes.STRING,
                 allowNull: true,
-                unique: {
-                    msg: "name must be unique !",
-                },
             },
             officeAddress: {
                 type: DataTypes.STRING,
@@ -44,24 +41,24 @@ module.exports = (sequelize, DataTypes) => {
             phone: {
                 type: DataTypes.STRING,
                 allowNull: true,
-                validate: {
-                    checkLength(value) {
-                        if (value.length >= 11) {
-                            throw new Error("phone number not valid !");
-                        }
-                    },
-                },
+                // validate: {
+                //     checkLength(value) {
+                //         if (value.length >= 11) {
+                //             throw new Error("phone number not valid !");
+                //         }
+                //     },
+                // },
             },
             ladlinePhone: {
                 type: DataTypes.STRING,
                 allowNull: true,
-                validate: {
-                    checkLength(value) {
-                        if (value.length >= 11) {
-                            throw new Error("phone number not valid !");
-                        }
-                    },
-                },
+                // validate: {
+                //     checkLength(value) {
+                //         if (value.length >= 11) {
+                //             throw new Error("phone number not valid !");
+                //         }
+                //     },
+                // },
             },
             gender: {
                 type: DataTypes.STRING,
@@ -93,11 +90,19 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.INTEGER,
                 allowNull: true,
             },
-            reraNumber: {
-                type: DataTypes.INTEGER,
+            passport: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            passportExpiry: {
+                type: DataTypes.STRING,
                 allowNull: true,
             },
             BRN: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+            },
+            reraNumber: {
                 type: DataTypes.INTEGER,
                 allowNull: true,
             },
@@ -105,18 +110,32 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
+            extension: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                defaultValue: ''
+            },
+            noOfProperty: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                defaultValue: 0
+            },
+            status: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                defaultValue: 'inActive'
+            },
             role: {
                 type: DataTypes.INTEGER,
-                // references: {
-                //   model: "role", // 'Actors' would also work
-                //   key: 'id'
-                // },
                 allowNull: false,
-              },
-              isDeleted: {
+            },
+            isDeleted: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
-              },
+            },
+            deletedBy: {
+                type: DataTypes.INTEGER,
+            },
         },
         {
             sequelize,

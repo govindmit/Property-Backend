@@ -7,10 +7,12 @@ const db = require("../models");
 const multer = require("multer");
 const { getImageUrl } = require("../helper/imageUpload");
 const User = db.User;
-const Role = db.Role;
+const Role = db.role;
 const Op = db.Sequelize.Op;
 const fromEMail = "varun.mangoit@gmail.com";
 const sendmail = require("sendmail")();
+const jsonwebtoken = require('jsonwebtoken');
+
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -22,86 +24,67 @@ const storage = multer.diskStorage({
 });
 
 exports.upload = multer({ storage: storage });
-
 exports.createUser = async (req, res) => {
-  const {
-    brokerageName,
-    officeAddress,
-    city,
-    country,
-    firstName,
-    lastName,
-    phone,
-    gender,
-    image,
-    email,
-    password,
-    trakheesiNumber,
-    ORN,
-    reraNumber,
-    BRN,
-    organizationName,
-    role,
-  } = req.body;
-  try {
-    let imagePath = "";
-    if (req.file) {
-      await getImageUrl(req.file).then((imgUrl) => {
-        imagePath = imgUrl;
-      });
-    }
-
-    const alreadyExistUser = await User.findOne({
-      where: { email: email, isDeleted: false },
-    });
-    if (alreadyExistUser) {
-      res.status(201).send({ message: "User already exist with this email" });
-      return;
-    }
-    const checkrole = await Role.findOne({ where: { id: role } });
-    if (!checkrole) {
-      res.status(201).send({ message: "role not exist!" });
-      return;
-    }
-    var hashPlainText = await hashPassword(password); // encrypted
-    var userRequest = {
-      brokerageName,
-      officeAddress,
-      city,
-      country,
-      firstName,
-      lastName,
-      phone,
-      gender,
-      image: imagePath,
-      email,
-      password: hashPlainText,
-      trakheesiNumber,
-      ORN,
-      reraNumber,
-      BRN,
-      organizationName,
-      role,
-    };
-
-    await User.create(userRequest)
-      .then((response) => {
-        if (response) {
-          res.status(200).send({
-            message: "User created successfully",
-          });
+    const { brokerageName, officeAddress, city, country, firstName, lastName, phone, gender, profilPic, email, password, trakheesiNumber, ORN, reraNumber, BRN,passport,passportExpiry, organizationName, ladlinePhone, extension, noOfProperty, role } = req.body;
+    try {
+        let imagePath = "";
+        if (req.file) {
+            await getImageUrl(req.file).then(imgUrl => {
+                imagePath = imgUrl;
+            })
         }
-      })
-      .catch((error) => {
-        res.status(500).send({ message: error.message });
-      });
-  } catch (error) {
-    res.status(400).send({
-      message:
-        error.message ||
-        "Oops !something went wrong in while creating the user",
-    });
-  }
+
+        const alreadyExistUser = await User.findOne({ where: { email: email, isDeleted: false } });
+        if (alreadyExistUser) {
+            res.status(201).send({ message: 'already exist with this email' })
+            return
+        }
+        const checkrole = await Role.findOne({ where: { id: role } });
+        if (!checkrole) {
+            res.status(201).send({ message: 'role not exist!' })
+            return
+        }
+        var hashPlainText = await hashPassword(password) // encrypted
+        var userRequest = {
+            brokerageName,
+            officeAddress,
+            city,
+            country,
+            firstName,
+            lastName,
+            phone,
+            ladlinePhone,
+            gender,
+            profilPic: imagePath,
+            email,
+            password: hashPlainText,
+            trakheesiNumber,
+            ORN,
+            passport,
+            passportExpiry,
+            reraNumber,
+            BRN,
+            organizationName,
+            role
+        };
+
+        await User.create(userRequest).then((response) => {
+            if (response) {
+                res.status(200).send({
+                    message: "successfully created",
+                });
+            }
+        })
+            .catch((error) => {
+                res.status(500).send({ message: error.message });
+            });
+    } catch (error) {
+        res.status(400).send({
+
+            message: error.message || 'Oops !something went wrong in while creating the user',
+
+        })
+    }
 };
 
 // Find a single user with an id
@@ -336,6 +319,7 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
+
 exports.resetPassword = async(req,res)=>{
     try{
         //   console.log("req.userid", req.userId);
@@ -391,3 +375,165 @@ exports.resetPassword = async(req,res)=>{
       })
     }
   }
+  
+exports.findAllUserWithSearch = async (req, res) => {
+    try {
+        const filter = req.query.search;
+
+        var condition = filter ? {
+            [Op.or]: [{ email: filter }, { firstName: filter }, { lastName: filter }, { role: filter }],
+            [Op.and]: [{ isDeleted: false }],
+        } : { isDeleted: false };
+
+
+
+        const users = await User.findAll({ where: condition, include: db.role, attributes: { exclude: ['role', 'password'] } });
+        if (users.length === 0) {
+            res.status(200).send({
+                message: 'No result found !'
+            })
+            return
+        }
+
+
+        if (users.length === 0) {
+            res.status(201).send({
+                message: 'users not found !',
+                data: pages
+            })
+            return
+        }
+        //     for(var i= 0 ; i< users.length ;i++){
+        //       const roleid = users[i].dataValues.role
+        //       const role = await Role.findOne({where:{id:roleid}, attributes: {exclude: ['isDeleted']},});
+        //       users[i].dataValues.role = role
+        //     }
+
+        //   // const role = await Role.findOne({where:{id:users.role}, attributes: {exclude: ['isDeleted']},});
+        //   // users.role= role
+
+        res.status(200).send(users)
+
+    } catch (error) {
+        res.status(400).send({
+            message: 'Oops! something went wrong while fetching the users',
+            subError: error.message
+        })
+    }
+}
+
+exports.updateUser = async (req, res) => {
+    try {
+
+        let imagePath = "";
+        if (req.file) {
+            await getImageUrl(req.file).then(imgUrl => {
+                imagePath = imgUrl;
+            })
+        }
+
+        const body = req.body;
+        const id = req.params.id;
+        try {
+            User.findOne({ where: { id: id, isDeleted: false } }).then(userdata => {
+                console.log(userdata, ";;;;;");
+                if (!userdata) {
+                    res.status(400).send({ message: 'user not found' })
+                }
+
+                var userRequest = {
+                    brokerageName: body.brokerageName,
+                    officeAddress: body.officeAddress,
+                    city: body.city,
+                    country: body.country,
+                    firstName: body.firstName,
+                    lastName: body.lastName,
+                    phone: body.phone,
+                    ladlinePhone: body.ladlinePhone,
+                    gender: body.gender,
+                    profilPic: imagePath,
+                    email: body.email,
+                    trakheesiNumber: body.trakheesiNumber,
+                    ORN: body.ORN,
+                    reraNumber: body.reraNumber,
+                    BRN: body.BRN,
+                    organizationName: body.organizationName,
+                    extension: body.extension,
+                    noOfProperty: body.noOfProperty,
+                    status:body.status
+
+                };
+
+                if (req.file === undefined) {
+                    userRequest.profilPic = userdata.dataValues.profilPic
+                }
+
+                User.update(userRequest, { where: { id: id } }).then(updatedData => {
+
+                    res.status(200).send({ message: 'user details updated successfully..', data: updatedData })
+                }).catch(err => {
+                    res.status(400).send({ errMessage: "user not updated ", subError: err.message })
+                })
+
+            }).catch(err => {
+                res.status(400).send({ message: err.message })
+            })
+
+        } catch (err) {
+            res.status(400).send({ message: err.message })
+        }
+
+    }
+    catch (err) {
+        res.status(400).send({ message: err.message })
+    }
+
+};
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+        if (!id) {
+            res.status(201).send({ message: 'user id not found' })
+            return
+        }
+        const userData = await User.findByPk(id);
+           if(userData.dataValues.isDeleted === true){
+            res.status(201).send({message:'already deleted.'})
+           }else{
+           await User.update({ isDeleted: true }, {
+                where: { id: id }
+            })
+                .then(num => {
+                    if (num == 1) {
+                        res.send({
+                            message: "successfully. deleted"
+                        });
+                    } else {
+                        res.send({
+                            message: `Cannot delete user with id=${id}. Maybe user was not found !`
+                        });
+                    }
+                })
+                .catch(err => {
+                    res.status(500).send({
+                        message: "Error delete user with id=" + id
+                    });
+                });
+           }
+
+ 
+    } catch (error) {
+        res.status(400).send({
+            message: 'Oops! something went wrong in delete the user ' + id,
+            subError: error.message
+        })
+    }
+}
+
+exports.getAuthToken = async(req,res)=>{
+  const token = jsonwebtoken.sign({},'websecret',{expiresIn: "24h"});
+  res.status(200).send({
+    authToken:token
+  });
+}

@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require("cors");
 const bodyParser = require('body-parser');
+require('dotenv').config({path:__dirname+'./env'})
+
 const app = express();
 
 var corsOptions = {
@@ -22,21 +24,20 @@ db.sequelize.sync()
     console.log("DB connected successfully..");
   })
   .catch((err) => {
-    console.log("Failed to sync db: " + err.message);
+    console.log("Failed to sync db ---: " + err.message);
   });
 app.use(cors(corsOptions));
+
+
+require("./routes/role.routes")(app);
+require("./routes/user.routes")(app);
 
 app.get("/", (req, res) => {
     res.json({ message: "Backend Api is working fine!" });
 });
 
-require("./routes/role.routes")(app);
-require("./routes/user.routes")(app);
-
-
 
 app.use(express.json());
-
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 6000;
