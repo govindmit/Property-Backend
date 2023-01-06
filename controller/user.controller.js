@@ -11,7 +11,6 @@ const Role = db.role;
 const Op = db.Sequelize.Op;
 const fromEMail = "varun.mangoit@gmail.com";
 const sendmail = require("sendmail")();
-const jsonwebtoken = require('jsonwebtoken');
 
 
 const storage = multer.diskStorage({
@@ -118,72 +117,6 @@ exports.finduser = async (req, res) => {
   }
 };
 
-exports.updateUser = async (req, res) => {
-  try {
-    let imagePath = "";
-    if (req.file) {
-      await getImageUrl(req.file).then((imgUrl) => {
-        imagePath = imgUrl;
-      });
-    }
-
-    const body = req.body;
-    const id = req.params.id;
-    try {
-      User.findOne({ where: { id: id, isDeleted: false } })
-        .then((userdata) => {
-          if (!userdata) {
-            res.status(400).send({ message: "user not found" });
-          }
-
-          var userRequest = {
-            brokerageName: body.brokerageName,
-            officeAddress: body.officeAddress,
-            city: body.city,
-            country: body.country,
-            firstName: body.firstName,
-            lastName: body.lastName,
-            phone: body.phone,
-            gender: body.gender,
-            image: imagePath,
-            email: body.email,
-            trakheesiNumber: body.trakheesiNumber,
-            ORN: body.ORN,
-            reraNumber: body.reraNumber,
-            BRN: body.BRN,
-            organizationName: body.organizationName,
-          };
-
-          if (req.file === undefined) {
-            userRequest.image = userdata.image;
-          }
-
-          User.update(userRequest, { where: { id: id } })
-            .then((updatedData) => {
-              res
-                .status(200)
-                .send({ message: "user details updated successfully.." });
-            })
-            .catch((err) => {
-              res.status(400).send({
-                errMessage: "user not updated ",
-                subError: err.message,
-              });
-            });
-        })
-        .catch((err) => {
-          res.status(400).send({ message: err.message });
-        });
-    } catch (err) {
-      res.status(400).send({ message: err.message });
-    }
-  } catch (err) {
-    res.status(400).send({ message: err.message });
-  }
-};
-
-//   -------------------------------------login----------------------------------
-
 exports.signin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -235,7 +168,6 @@ exports.signin = async (req, res) => {
   }
 };
 
-
 exports.sendforgetLink = async (req, res) => {
     try {
       const { email } = req.body;
@@ -284,7 +216,6 @@ exports.sendforgetLink = async (req, res) => {
   
 exports.forgotPassword = async (req, res) => {
   try {
-    // console.log("req.email", req.email);
     const { password, confirm_password } = req.body;
     if (!password || !confirm_password) {
       res
@@ -321,11 +252,8 @@ exports.forgotPassword = async (req, res) => {
 
 
 exports.resetPassword = async(req,res)=>{
-    try{
-        //   console.log("req.userid", req.userId);
-        
+    try{  
          const {old_password , new_password , confirm_password} = req.body ;
-            console.log("req.body ======> ",req.body);
          if(!old_password || !new_password || !confirm_password){
            res.status(201).send({
                message:'body should not be empty !'
@@ -375,7 +303,7 @@ exports.resetPassword = async(req,res)=>{
       })
     }
   }
-  
+//  ----------------------------------------------------------------------------
 exports.findAllUserWithSearch = async (req, res) => {
     try {
         const filter = req.query.search;
@@ -403,14 +331,6 @@ exports.findAllUserWithSearch = async (req, res) => {
             })
             return
         }
-        //     for(var i= 0 ; i< users.length ;i++){
-        //       const roleid = users[i].dataValues.role
-        //       const role = await Role.findOne({where:{id:roleid}, attributes: {exclude: ['isDeleted']},});
-        //       users[i].dataValues.role = role
-        //     }
-
-        //   // const role = await Role.findOne({where:{id:users.role}, attributes: {exclude: ['isDeleted']},});
-        //   // users.role= role
 
         res.status(200).send(users)
 
@@ -425,18 +345,20 @@ exports.findAllUserWithSearch = async (req, res) => {
 exports.updateUser = async (req, res) => {
     try {
 
+      const id = req.params.id;
+      const body = req.body;
         let imagePath = "";
         if (req.file) {
             await getImageUrl(req.file).then(imgUrl => {
                 imagePath = imgUrl;
+                body['profilPic'] = imgUrl
             })
         }
-
-        const body = req.body;
-        const id = req.params.id;
+     
+        
         try {
             User.findOne({ where: { id: id, isDeleted: false } }).then(userdata => {
-                console.log(userdata, ";;;;;");
+             
                 if (!userdata) {
                     res.status(400).send({ message: 'user not found' })
                 }
@@ -467,9 +389,9 @@ exports.updateUser = async (req, res) => {
                 if (req.file === undefined) {
                     userRequest.profilPic = userdata.dataValues.profilPic
                 }
+                
 
-                User.update(userRequest, { where: { id: id } }).then(updatedData => {
-
+                User.update(body, { where: { id: id } }).then(updatedData => {
                     res.status(200).send({ message: 'user details updated successfully..', data: updatedData })
                 }).catch(err => {
                     res.status(400).send({ errMessage: "user not updated ", subError: err.message })
@@ -529,11 +451,4 @@ exports.deleteUser = async (req, res) => {
             subError: error.message
         })
     }
-}
-
-exports.getAuthToken = async(req,res)=>{
-  const token = jsonwebtoken.sign({},'websecret',{expiresIn: "24h"});
-  res.status(200).send({
-    authToken:token
-  });
 }
