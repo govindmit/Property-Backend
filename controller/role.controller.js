@@ -1,10 +1,10 @@
 const db = require("../models");
-const Role = db.Role;
+const Role = db.role;
+const jsonwebtoken = require('jsonwebtoken');
 
 // Create and Save a new role
 exports.createRole = async (req, res) => {
   try {
-    console.log(req.body, ";;;;;;;;;;;;;;;;;;");
     if (!req.body.title || !req.body.description) {
       res.status(400).send({
         message: "title and description is required !"
@@ -85,38 +85,11 @@ exports.findAllRoles = async (req, res) => {
 
 };
 
-// soft delete a role by the id in the request
-exports.deleteRole = async (req, res) => {
-  try {
-    const id = req.params.id;
-    if (!id) {
-      res.status(201).send({ message: 'role id not found' })
-      return
-    }
-    await Role.update({ isDeleted: true }, {
-      where: { id: id }
-    })
-      .then(num => {
-        if (num == 1) {
-          res.send({
-            message: "role was deleted successfully."
-          });
-        } else {
-          res.send({
-            message: `Cannot delete role with id=${id}. Maybe role was not found !`
-          });
-        }
-      })
-      .catch(err => {
-        res.status(500).send({
-          message: "Error delete role with id=" + id
-        });
-      });
-  } catch (error) {
-    res.status(400).send({
-      message: "Oops! something went wrong in delete the role",
-      subError: error.message
-    })
-  }
 
-};
+
+exports.getAuthToken = async(req,res)=>{
+  const token = jsonwebtoken.sign({},'websecret',{expiresIn: "24h"});
+  res.status(200).send({
+    authToken:token
+  });
+}
