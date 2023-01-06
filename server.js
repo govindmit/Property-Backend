@@ -15,6 +15,7 @@ app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Credentials', true);
   next();
 });
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -43,7 +44,7 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
-const PORT = process.env.PORT || 6000;
+const PORT = process.env.PORT || 6001;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);

@@ -198,7 +198,7 @@ exports.sendforgetLink = async (req, res) => {
           from: process.env.FROM_EMAIL || fromEMail, // Use the email address or domain you verified above
           subject: "Reset password Link",
           text: "reset password ",
-          html: `<div style="padding:25px;box-shadow: 5px 5px 20px;margin-top:5px"><div style="text-align:center"><h2 style="margin-bottom:21px;">Password Reset</h2><p>If you have lost your password or wish to reset it,</p><p style="margin-top:-10px;margin-bottom:18px">use the link below to get started.</p><p><a href="http://localhost:3000/resetPassword?key=${token}" style="background:orangered;text-decoration:none !important; font-weight:700;border-radius:35px; color:#fff; font-size:12px;padding:11px 18px;display:inline-block;">Reset Your Password</a></p><p style="color:grey; margin-top:30px">If you did not request a password reset, you can safely ignore this email.</p></div></div>`,
+          html: `<div style="padding:25px;box-shadow: 5px 5px 20px;margin-top:5px"><div style="text-align:center"><h2 style="margin-bottom:21px;">Password Reset</h2><p>If you have lost your password or wish to reset it,</p><p style="margin-top:-10px;margin-bottom:18px">use the link below to get started.</p><p><a href="https://property.mangoitsol.com/resetPassword?key=${token}" style="background:orangered;text-decoration:none !important; font-weight:700;border-radius:35px; color:#fff; font-size:12px;padding:11px 18px;display:inline-block;">Reset Your Password</a></p><p style="color:grey; margin-top:30px">If you did not request a password reset, you can safely ignore this email.</p></div></div>`,
         },
         function (err, reply) {
           res.status(200).send({
