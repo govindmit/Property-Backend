@@ -24,7 +24,8 @@ const storage = multer.diskStorage({
 
 exports.upload = multer({ storage: storage });
 exports.createUser = async (req, res) => {
-    const { brokerageName, officeAddress, city, country, firstName, lastName, phone, gender, profilPic, email, password, trakheesiNumber, ORN, reraNumber, BRN,passport,passportExpiry, organizationName, ladlinePhone, extension, noOfProperty, role } = req.body;
+    const { brokerageName, officeAddress, city, country, firstName, lastName, phone, gender, profilPic,
+       email,password, trakheesiNumber, ORN,reraNumber, BRN,passport,passportExpiry, organizationName, ladlinePhone, extension, noOfProperty, status,role } = req.body;
     try {
         let imagePath = "";
         if (req.file) {
@@ -64,6 +65,7 @@ exports.createUser = async (req, res) => {
             reraNumber,
             BRN,
             organizationName,
+            status,
             role
         };
 

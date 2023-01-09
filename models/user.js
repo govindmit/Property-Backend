@@ -123,7 +123,7 @@ module.exports = (sequelize, DataTypes) => {
             status: {
                 type: DataTypes.STRING,
                 allowNull: true,
-                defaultValue: 'inActive'
+                defaultValue: 'Inactive'
             },
             role: {
                 type: DataTypes.INTEGER,
