@@ -424,20 +424,16 @@ exports.updateUser = async (req, res) => {
 
           User.update(body, { where: { id: id } })
             .then((updatedData) => {
-              res
-                .status(200)
-                .send({
-                  message: "user details updated successfully..",
-                  data: updatedData,
-                });
+              res.status(200).send({
+                message: "user details updated successfully..",
+                data: updatedData,
+              });
             })
             .catch((err) => {
-              res
-                .status(400)
-                .send({
-                  errMessage: "user not updated ",
-                  subError: err.message,
-                });
+              res.status(400).send({
+                errMessage: "user not updated ",
+                subError: err.message,
+              });
             });
         })
         .catch((err) => {
@@ -489,6 +485,108 @@ exports.deleteUser = async (req, res) => {
     res.status(400).send({
       message: "Oops! something went wrong in delete the user " + id,
       subError: error.message,
+    });
+  }
+};
+////////////////////////////////////////////////////////////////////////
+
+exports.registration = async (req, res) => {
+  const {
+    brokerageName,
+    officeAddress,
+    city,
+    country,
+    firstName,
+    lastName,
+    phone,
+    gender,
+    profilPic,
+    email,
+    password,
+    trakheesiNumber,
+    ORN,
+    reraNumber,
+    BRN,
+    passport,
+    passportExpiry,
+    organizationName,
+    ladlinePhone,
+    extension,
+    brokerageEmail,
+    noOfProperty,
+    role,
+    addressLine,
+    numberOfLocality,
+    localityName,
+    brokerageId,
+    licensingEmmirate,
+    propertyManage,
+    link,
+    customerFeedback,
+  } = req.body;
+  try {
+    let imagePath = "";
+    if (req.file) {
+      await getImageUrl(req.file).then((imgUrl) => {
+        imagePath = imgUrl;
+      });
+    }
+
+    const alreadyExistUser = await User.findOne({
+      where: { email: email, isDeleted: false },
+    });
+    if (alreadyExistUser) {
+      res.status(201).send({ message: "already exist with this email" });
+      return;
+    }
+    const checkrole = await Role.findOne({ where: { id: role } });
+    if (!checkrole) {
+      res.status(201).send({ message: "role not exist!" });
+      return;
+    }
+    var hashPlainText = await hashPassword(password); // encrypted
+    var userRequest = {
+      brokerageName,
+      officeAddress,
+      city,
+      country,
+      firstName,
+      lastName,
+      phone,
+      ladlinePhone,
+      gender,
+      profilPic: imagePath,
+      email,
+      password: hashPlainText,
+      trakheesiNumber,
+      ORN,
+      passport,
+      passportExpiry,
+      brokerageId,
+      brokerageEmail,
+      reraNumber,
+      BRN,
+      organizationName,
+      role,
+      propertyManage,
+    };
+    await User.create(userRequest)
+      .then((response) => {
+        if (response) {
+          res.status(200).send({
+            data:response,
+            message: "Registration successfull",
+          });
+        }
+      })
+      .catch((error) => {
+        res.status(500).send({ message: error.message });
+      });
+  } catch (error) {
+    res.status(400).send({
+      message:
+        error.message ||
+        "Oops !something went wrong in while creating the user",
     });
   }
 };
