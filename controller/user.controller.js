@@ -1,8 +1,4 @@
-const {
-  hashPassword,
-  isValidPassword,
-  generateToken,
-} = require("../helper/auth");
+const {  hashPassword,  isValidPassword,  generateToken,} = require("../helper/auth");
 const db = require("../models");
 const multer = require("multer");
 const { getImageUrl } = require("../helper/imageUpload");
@@ -23,6 +19,7 @@ const storage = multer.diskStorage({
 });
 
 exports.upload = multer({ storage: storage });
+
 exports.createUser = async (req, res) => {
     const { brokerageName, officeAddress, city, country, firstName, lastName, phone, gender, profilPic,
        email,password, trakheesiNumber, ORN,reraNumber, BRN,passport,passportExpiry, organizationName, ladlinePhone, extension, noOfProperty, status,role } = req.body;
@@ -88,7 +85,6 @@ exports.createUser = async (req, res) => {
     }
 };
 
-// Find a single user with an id
 exports.finduser = async (req, res) => {
   try {
     const id = req.params.id ? req.params.id : req.userId;
@@ -149,6 +145,7 @@ exports.signin = async (req, res) => {
     const token = await generateToken({
       id: user.id,
       email: user.email,
+      firstName:user.firstName,
       role: role,
     });
     res
@@ -356,8 +353,7 @@ exports.updateUser = async (req, res) => {
                 body['profilPic'] = imgUrl
             })
         }
-     
-        
+           
         try {
             User.findOne({ where: { id: id, isDeleted: false } }).then(userdata => {
              
@@ -381,9 +377,13 @@ exports.updateUser = async (req, res) => {
                     ORN: body.ORN,
                     reraNumber: body.reraNumber,
                     BRN: body.BRN,
+                    passport:body.passport,
+                    passportExpiry:body.passportExpiry,
+                    reraNumber:body.reraNumber,
                     organizationName: body.organizationName,
                     extension: body.extension,
                     noOfProperty: body.noOfProperty,
+                    role:body.role,
                     status:body.status
 
                 };
@@ -392,7 +392,6 @@ exports.updateUser = async (req, res) => {
                     userRequest.profilPic = userdata.dataValues.profilPic
                 }
                 
-
                 User.update(body, { where: { id: id } }).then(updatedData => {
                     res.status(200).send({ message: 'user details updated successfully..', data: updatedData })
                 }).catch(err => {

@@ -21,6 +21,7 @@ db.sequelize = sequelize;
 
 db.role = require("./role")(sequelize,Sequelize);
 db.User = require("./user")(sequelize,Sequelize);
+db.property = require('./property')(sequelize,Sequelize)
 
 db.role.hasMany(db.User, {foreignKey: 'role'});
 db.User.belongsTo(db.role, {foreignKey: 'role'})
