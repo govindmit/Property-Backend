@@ -2,13 +2,13 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-    class User extends Model {
+    class Property extends Model {
         static associate(models) {
 
         }
     }
 
-    User.init(
+    Property.init(
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -16,11 +16,31 @@ module.exports = (sequelize, DataTypes) => {
                 primaryKey: true,
                 unique: true,
             },
-            brokerageName: {
+            userId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            firstName: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            officeAddress: {
+            lastName: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            uploadFile: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            propertyName: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            propertyAddress: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            addressLine2: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
@@ -32,105 +52,96 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            firstName: {
+            propertySaleStatus: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            lastName: {
+            propertyPurpose: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            phone: {
-                type: DataTypes.STRING,
-                allowNull: true,
-                // validate: {
-                //     checkLength(value) {
-                //         if (value.length >= 11) {
-                //             throw new Error("phone number not valid !");
-                //         }
-                //     },
-                // },
-            },
-            ladlinePhone: {
-                type: DataTypes.STRING,
-                allowNull: true,
-                // validate: {
-                //     checkLength(value) {
-                //         if (value.length >= 11) {
-                //             throw new Error("phone number not valid !");
-                //         }
-                //     },
-                // },
-            },
-            gender: {
+            propertyCategory: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            profilPic: {
-                type: DataTypes.STRING,
-                allowNull: true,
-            },
-            email: {
-                type: DataTypes.STRING,
-                allowNull: true,
-                validate: {
-                    isEmail: {
-                        msg: "Must be an EMAIL proper",
-                    },
-                },
-                unique: true,
-            },
-            password: {
-                type: DataTypes.STRING,
-                allowNull: true,
-            },
-            trakheesiNumber: {
+            propertyPermit: {
                 type: DataTypes.INTEGER,
                 allowNull: true,
             },
-            ORN: {
-                type: DataTypes.INTEGER,
-                allowNull: true,
-            },
-            passport: {
+            propertyType: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            passportExpiry: {
+
+            beds: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            BRN: {
-                type: DataTypes.INTEGER,
-                allowNull: true,
-            },
-            reraNumber: {
-                type: DataTypes.INTEGER,
-                allowNull: true,
-            },
-            organizationName: {
+            baths: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            extension: {
+            sqft: {
                 type: DataTypes.STRING,
                 allowNull: true,
-                defaultValue: ''
             },
-            noOfProperty: {
+            completionStatus: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            ownershipStatus: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            amenities:{
+                type: DataTypes.JSON,
+                allowNull:true,
+                defaultValue:[]
+            },
+            floorRange:{
                 type: DataTypes.INTEGER,
                 allowNull: true,
-                defaultValue: 0
             },
-            status: {
+            saleValue:{
+                type: DataTypes.INTEGER,
+                allowNull: true,
+            },
+            paymentMethod:{
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            rentPerYear:{
+                type: DataTypes.INTEGER,
+                allowNull: true,
+            },
+            rentFrequency:{
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            contractPeriod:{
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            vacancyNoticePeriod:{
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            maintananceFee:{
+                type: DataTypes.INTEGER,
+                allowNull: true,
+            },
+            paidBy:{
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+
+
+            status: {           
                 type: DataTypes.STRING,
                 allowNull: true,
                 defaultValue: 'Inactive'
             },
-            role: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
+      
             isDeleted: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
@@ -141,10 +152,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         {
             sequelize,
-            modelName: "UserDetails",
+            modelName: "PropertyDetails",
         }
     );
-    return User;
+    return Property;
 };
-
-

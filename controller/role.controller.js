@@ -85,8 +85,6 @@ exports.findAllRoles = async (req, res) => {
 
 };
 
-
-
 exports.getAuthToken = async(req,res)=>{
   const token = jsonwebtoken.sign({},'websecret',{expiresIn: "24h"});
   res.status(200).send({
