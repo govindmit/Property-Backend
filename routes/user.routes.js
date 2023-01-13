@@ -1,7 +1,7 @@
 module.exports = app => {
   const { upload, createUser, finduser, updateUser, registration,findAllUserWithSearch, deleteUser, signin, forgotPassword, sendforgetLink, resetPassword } = require("../controller/user.controller");
   const authJwt = require("../helper/role.auth");
-  const { webProtected } = require('../helper/auth')
+  const { webProtected } = require('../helper/auth');
   var router = require("express").Router();
   const express = require('express');
   app.use(express.static(__dirname + '/public'));
