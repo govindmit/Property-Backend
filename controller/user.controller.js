@@ -524,6 +524,7 @@ exports.registration = async (req, res) => {
     link,
     customerFeedback,
   } = req.body;
+  let locall=JSON.stringify(localityName)
   try {
     let imagePath = "";
     if (req.file) {
@@ -569,12 +570,16 @@ exports.registration = async (req, res) => {
       organizationName,
       role,
       propertyManage,
+      numberOfLocality,
+      locall,
+      licensingEmmirate
     };
+// console.log('userReque##############',userRequest);
     await User.create(userRequest)
       .then((response) => {
         if (response) {
           res.status(200).send({
-            data:response,
+            data: response,
             message: "Registration successfull",
           });
         }
