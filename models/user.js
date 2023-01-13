@@ -79,7 +79,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       password: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       trakheesiNumber: {
         type: DataTypes.INTEGER,
@@ -143,10 +143,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       licensingEmmirate: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
-      },
-      link: {
-        type: DataTypes.STRING,
         allowNull: true,
       },
       brokerageEmail:{

@@ -37,7 +37,8 @@ app.post('/genrateToken', getAuthToken)
 
 require("./routes/role.routes")(app);
 require("./routes/user.routes")(app);
-require("./routes/property")(app)
+require("./routes/property")(app);
+require("./routes/feedback")(app);
 
 
 app.use(express.json());
