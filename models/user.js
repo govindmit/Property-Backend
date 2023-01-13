@@ -137,7 +137,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 0,
       },
       localityName: {
-        type: DataTypes.TEXT,
+        type: DataTypes.JSON,
         allowNull: true,
       },
       licensingEmmirate: {
