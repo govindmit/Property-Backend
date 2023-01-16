@@ -1,5 +1,5 @@
 module.exports = app => {
-  const { upload, createUser, finduser, updateUser, findAllUserWithSearch, deleteUser, signin, forgotPassword, sendforgetLink, resetPassword } = require("../controller/user.controller");
+  const { upload, createUser, finduser, updateUser, registration,findAllUserWithSearch, deleteUser, signin, forgotPassword, sendforgetLink, resetPassword } = require("../controller/user.controller");
   const authJwt = require("../helper/role.auth");
   const { webProtected } = require('../helper/auth');
   var router = require("express").Router();
@@ -18,6 +18,8 @@ module.exports = app => {
   router.put("/changepassword", [authJwt.verifyToken], resetPassword);
   router.post("/resetPassword", [authJwt.verifyResetToken], forgotPassword);
  
+  router.post("/registration", webProtected, upload.single("profilPic"), registration);
+
 
   app.use("/api/user", router);
 };
