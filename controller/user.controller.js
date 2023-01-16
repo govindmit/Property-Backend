@@ -6,12 +6,13 @@ const {
 const db = require("../models");
 const multer = require("multer");
 const { getImageUrl } = require("../helper/imageUpload");
+const { DB } = require("../config/dbConfig");
 const User = db.User;
 const Feedback=db.feedback;
 const FeedbackCustomer=db.feedbackCustomer;
 const Role = db.role;
 const Op = db.Sequelize.Op;
-const fromEMail = "varun.mangoit@gmail.com";
+const fromEMail = "varun.mangoit@gmail.com"; 
 const sendmail = require("sendmail")();
 
 const storage = multer.diskStorage({
@@ -196,7 +197,7 @@ exports.signin = async (req, res) => {
       where: { email: req.body.email, isDeleted: false },
       attributes: { exclude: ["password"] },
     });
-    const newFeed = await FeedbackCustomer.findAll({
+    const newFeed = await FeedbackCustomer.findOne({
       include: [{ model: Feedback, include: [User], where: { userId: user.id } }],
     });
 
@@ -384,7 +385,7 @@ exports.findAllUserWithSearch = async (req, res) => {
 
     const users = await User.findAll({
       where: condition,
-      include: db.role,
+      include: [{ model: FeedbackCustomer, include: [Feedback] },db.role],
       attributes: { exclude: ["role", "password"] },
     });
     if (users.length === 0) {
@@ -583,6 +584,7 @@ exports.registration = async (req, res) => {
     }
     var hashPlainText = await hashPassword(password); // encrypted
     var userRequest = {
+
       brokerageName,
       officeAddress,
       city,
@@ -590,33 +592,56 @@ exports.registration = async (req, res) => {
       firstName,
       lastName,
       phone,
-      ladlinePhone,
       gender,
       profilPic: imagePath,
       email,
       password: hashPlainText,
       trakheesiNumber,
       ORN,
-      passport,
-      passportExpiry,
-      brokerageId,
-      brokerageEmail,
       reraNumber,
       BRN,
+      passport,
+      passportExpiry,
       organizationName,
+      ladlinePhone,
+      extension,
+      brokerageEmail,
+      noOfProperty,
       role,
-      propertyManage,
+      addressLine,
       numberOfLocality,
       localityName,
+      brokerageId,
       licensingEmmirate,
+      propertyManage,
+      customerFeedback,
     };
     await User.create(userRequest)
-      .then((response) => {
+      .then(async (response) => {
         if (response) {
-          res.status(200).send({
-            data: response,
-            message: "Registration successfull",
-          });
+            const newFeed = await FeedbackCustomer.findOne({
+              include: [{ model: Feedback, include: [User], where: { userId: response.dataValues.id } }],
+            });
+          
+            const token = await generateToken({
+              id: response.dataValues.id,
+              email: response.dataValues.email,
+              firstName: response.dataValues.firstName,
+              lastName: response.dataValues.lastName,
+              role: role,
+            });
+            res
+              .status(200)
+              .cookie("x-access-token", token, {
+                maxAge: 86400,
+                secure: false,
+                httpOnly: true,
+              })
+              .send({
+                accessToken: token,
+                data: response.dataValues,
+                newFeed:newFeed
+              });
         }
       })
       .catch((error) => {
@@ -626,7 +651,7 @@ exports.registration = async (req, res) => {
     res.status(400).send({
       message:
         error.message ||
-        "Oops !something went wrong in while creating the user",
+        "Oops !something went wrong in while creating the Account",
     });
   }
 };

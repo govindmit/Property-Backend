@@ -145,7 +145,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         allowNull: true,
       },
-      brokerageEmail:{
+      brokerageEmail: {
         type: DataTypes.STRING,
         allowNull: true,
       },
@@ -158,7 +158,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       customerFeedback: {
-        type: DataTypes.TEXT,
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
       isDeleted: {
@@ -176,5 +176,3 @@ module.exports = (sequelize, DataTypes) => {
   );
   return User;
 };
-
-

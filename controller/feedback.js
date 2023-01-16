@@ -1,8 +1,8 @@
 const db = require("../models");
 const Feedback = db.feedback;
 const FeedbackCustomer = db.feedbackCustomer;
-const jsonwebtoken = require("jsonwebtoken");
 const User = db.User;
+const jsonwebtoken = require("jsonwebtoken");
 
 exports.createLink = async (req, res) => {
   try {
@@ -22,9 +22,17 @@ exports.createLink = async (req, res) => {
         customerDetails: req.body.customerDetails,
         feedbackId: feedbacks.dataValues.id,
       };
-      await FeedbackCustomer.create(customerData).then((data) => {
-        res.status(200).send(data);
-      });
+      var saveCustomerId = await FeedbackCustomer.create(customerData);
+      if (saveCustomerId) {
+        const newuser = await User.findOne({
+          where: { id: req.body.userId, isDeleted: false },
+        });
+        newuser.customerFeedback = saveCustomerId.dataValues.id;
+        newuser.save();
+        res.status(200).send({
+          message: "feedback create successfully...",
+        });
+      }
     }
   } catch (error) {
     res.status(400).send({
@@ -37,8 +45,6 @@ exports.findAllFeedback = async (req, res) => {
   try {
     const newFeed = await Feedback.findAll({ include: db.User });
     res.status(200).send(newFeed);
-
-    console.log("@@@@@@@@@@@@@", newFeed);
   } catch (error) {
     res.status(400).send({
       message: "Oops! something went wrong while fetching the users",
