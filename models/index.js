@@ -25,17 +25,17 @@ db.feedback = require("./feedback")(sequelize, Sequelize);
 db.feedbackCustomer = require("./feedbackCustomer")(sequelize, Sequelize);
 
 
-db.role.hasMany(db.User, { foreignKey: "role" });
-db.User.belongsTo(db.role, { foreignKey: "role" });
+db.role.hasMany(db.User, { foreignKey: "role_type" });
+db.User.belongsTo(db.role, { foreignKey: "role_type" });
 
-db.User.hasMany(db.feedback, { foreignKey: "userId" });
-db.feedback.belongsTo(db.User, { foreignKey: "userId" });
+db.User.hasMany(db.property, {foreignKey: 'user_id'});
+db.property.belongsTo(db.User, {foreignKey: 'user_id'})
 
-db.feedback.hasMany(db.feedbackCustomer, { foreignKey: "feedbackId" });
-db.feedbackCustomer.belongsTo(db.feedback, { foreignKey: "feedbackId" });
+db.User.hasMany(db.feedback, { foreignKey: "user_id" });
+db.feedback.belongsTo(db.User, { foreignKey: "user_id" });
 
-db.feedbackCustomer.hasMany(db.User, { foreignKey: "customerFeedback" });
-db.User.belongsTo(db.feedbackCustomer, { foreignKey: "customerFeedback" });
+db.feedback.hasMany(db.feedbackCustomer, { foreignKey: "feedback_id" });
+db.feedbackCustomer.belongsTo(db.feedback, { foreignKey: "feedback_id" });
 
 
 module.exports = db;

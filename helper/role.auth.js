@@ -24,12 +24,12 @@ verifyToken = async (req, res, next) => {
              subError:err.message
            });
          }
-         req.userId = decoded.data.id;
+         req.user_id = decoded.data.id;
          req.email  =decoded.data.email;
         });
-       const user = await User.findByPk(req.userId);
+       const user = await User.findByPk(req.user_id);
        if(user){
-        const role = await Role.findOne({where:{id:user.role}, attributes: {exclude: ['isDeleted']},});
+        const role = await Role.findOne({where:{id:user.role_type}, attributes: {exclude: ['is_deleted']},});
         req.loginRole =role.dataValues.title
        }
      
@@ -67,8 +67,8 @@ verifyResetToken = async (req, res, next) => {
 
 
     isAdmin = async (req, res, next) => {
-        const user = await User.findByPk(req.userId);
-        const role = await Role.findOne({where:{id:user.role}, attributes: {exclude: ['isDeleted']},});
+        const user = await User.findByPk(req.user_id);
+        const role = await Role.findOne({where:{id:user.role_type}, attributes: {exclude: ['is_deleted']},});
               if (user && role.title !== 'Admin') {
                         res.status(403).send({
                             message: `Your role is ${role.title} !, To Acccess This Required Admin Role!`
@@ -80,8 +80,8 @@ verifyResetToken = async (req, res, next) => {
      };
      
      isSubscriber = async (req, res, next) => {
-        const user = await User.findByPk(req.userId);
-        const role = await Role.findOne({where:{id:user.role}, attributes: {exclude: ['isDeleted']},});
+        const user = await User.findByPk(req.user_id);
+        const role = await Role.findOne({where:{id:user.role_type}, attributes: {exclude: ['is_deleted']},});
               if (user && role.title !== 'Subscriber') {
                         res.status(403).send({
                             message: `Your role is ${role.title} !, To Acccess This Required Subscriber Role!`
@@ -92,8 +92,8 @@ verifyResetToken = async (req, res, next) => {
            next();
      };
      isAuthor = async (req, res, next) => {
-        const user = await User.findByPk(req.userId);
-        const role = await Role.findOne({where:{id:user.role}, attributes: {exclude: ['isDeleted']},});
+        const user = await User.findByPk(req.user_id);
+        const role = await Role.findOne({where:{id:user.role_type}, attributes: {exclude: ['is_deleted']},});
               if (user && role.title !== 'Author') {
           
                         res.status(403).send({
@@ -105,8 +105,8 @@ verifyResetToken = async (req, res, next) => {
            next();
      };
      isEditor = async (req, res, next) => {
-        const user = await User.findByPk(req.userId);
-        const role = await Role.findOne({where:{id:user.role}, attributes: {exclude: ['isDeleted']},});
+        const user = await User.findByPk(req.user_id);
+        const role = await Role.findOne({where:{id:user.role_type}, attributes: {exclude: ['is_deleted']},});
               if (user && role.title !== 'Editor') {
                         res.status(403).send({
                             message: `Your role is ${role.title} !, To Acccess This Required Editor Role!`

@@ -28,29 +28,29 @@ exports.upload = multer({ storage: storage });
 
 exports.createUser = async (req, res) => {
   const {
-    brokerageName,
-    officeAddress,
+    brokerage_name,
+    office_address,
     city,
     country,
-    firstName,
-    lastName,
+    first_name,
+    last_name,
     phone,
     gender,
-    profilPic,
+    profile_pic,
     email,
     password,
-    trakheesiNumber,
+    trakheesi_number,
     ORN,
-    reraNumber,
+    rera_number,
     BRN,
     passport,
-    passportExpiry,
-    organizationName,
-    ladlinePhone,
+    passport_expiry,
+    organization_name,
+    landline_phone,
     extension,
-    noOfProperty,
+    no_of_property,
     status,
-    role,
+    role_type,
   } = req.body;
   try {
     let imagePath = "";
@@ -61,39 +61,39 @@ exports.createUser = async (req, res) => {
     }
 
     const alreadyExistUser = await User.findOne({
-      where: { email: email, isDeleted: false },
+      where: { email: email, is_deleted: false },
     });
     if (alreadyExistUser) {
       res.status(201).send({ message: "already exist with this email" });
       return;
     }
-    const checkrole = await Role.findOne({ where: { id: role } });
+    const checkrole = await Role.findOne({ where: { id: role_type } });
     if (!checkrole) {
       res.status(201).send({ message: "role not exist!" });
       return;
     }
     var userRequest = {
-      brokerageName,
-      officeAddress,
+      brokerage_name,
+      office_address,
       city,
       country,
-      firstName,
-      lastName,
+      first_name,
+      last_name,
       phone,
-      ladlinePhone,
+      landline_phone,
       gender,
-      profilPic: imagePath,
+      profile_pic: imagePath,
       email,
       password: password,
-      trakheesiNumber,
+      trakheesi_number,
       ORN,
       passport,
-      passportExpiry,
-      reraNumber,
+      passport_expiry,
+      rera_number,
       BRN,
-      organizationName,
+      organization_name,
       status,
-      role,
+      role_type,
     };
 
     await User.create(userRequest).then(async (response) => {
@@ -142,13 +142,13 @@ exports.createUser = async (req, res) => {
 
 exports.finduser = async (req, res) => {
   try {
-    const id = req.params.id ? req.params.id : req.userId;
+    const id = req.params.id ? req.params.id : req.user_id;
     if (!id) {
       res.status(201).send({ message: "id is required !" });
       return;
     }
     const user = await User.findOne({
-      where: { id: id, isDeleted: false },
+      where: { id: id, is_deleted: false },
       attributes: { exclude: ["password"] },
       // include: db.Role
     });
@@ -157,8 +157,8 @@ exports.finduser = async (req, res) => {
       return;
     }
     const role = await Role.findOne({
-      where: { id: user.role },
-      attributes: { exclude: ["isDeleted"] },
+      where: { id: user.role_type },
+      attributes: { exclude: ["is_deleted"] },
     });
     user.role = role;
     res.status(200).send(user);
@@ -178,15 +178,15 @@ exports.signin = async (req, res) => {
       return;
     }
     const user = await User.findOne({
-      where: { email: req.body.email, isDeleted: false },
+      where: { email: req.body.email, is_deleted: false },
     });
     if (!user) {
       res.status(201).send({ message: "user not exist with this email !" });
       return;
     }
     const role = await Role.findOne({
-      where: { id: user.role },
-      attributes: { exclude: ["isDeleted"] },
+      where: { id: user.role_type },
+      attributes: { exclude: ["is_deleted"] },
     });
     const validPasword = await isValidPassword(password, user.password);
     if (!validPasword) {
@@ -194,18 +194,18 @@ exports.signin = async (req, res) => {
       return;
     }
     const userData = await User.findOne({
-      where: { email: req.body.email, isDeleted: false },
+      where: { email: req.body.email, is_deleted: false },
       attributes: { exclude: ["password"] },
     });
     const newFeed = await FeedbackCustomer.findOne({
-      include: [{ model: Feedback, include: [User], where: { userId: user.id } }],
+      include: [{ model: Feedback, include: [User], where: { user_id: user.id } }],
     });
 
     const token = await generateToken({
       id: user.id,
       email: user.email,
-      firstName: user.firstName,
-      role: role,
+      first_name: user.first_name,
+      role_type: role,
 
     });
     res
@@ -238,7 +238,7 @@ exports.sendforgetLink = async (req, res) => {
       return;
     }
     const user = await User.findOne({
-      where: { email: email, isDeleted: false },
+      where: { email: email, is_deleted: false },
     });
     if (!user) {
       res.status(201).send({ message: "User not exist with this email !" });
@@ -284,7 +284,7 @@ exports.forgotPassword = async (req, res) => {
       return;
     }
     const user = await User.findOne({
-      where: { email: req.email, isDeleted: false },
+      where: { email: req.email, is_deleted: false },
     });
     if (!user) {
       res.status(201).send({ message: "Email not exist !" });
@@ -326,7 +326,7 @@ exports.resetPassword = async (req, res) => {
       return;
     }
     const user = await User.findOne({
-      where: { id: req.userId, isDeleted: false },
+      where: { id: req.user_id, is_deleted: false },
     });
     const validPasword = await isValidPassword(old_password, user.password);
     if (!user) {
@@ -342,7 +342,7 @@ exports.resetPassword = async (req, res) => {
     const data = {
       password: hashPlainText,
     };
-    await User.update(data, { where: { id: req.userId } })
+    await User.update(data, { where: { id: req.user_id } })
       .then((num) => {
         if (num == 1) {
           res.send({
@@ -375,18 +375,18 @@ exports.findAllUserWithSearch = async (req, res) => {
       ? {
           [Op.or]: [
             { email: filter },
-            { firstName: filter },
-            { lastName: filter },
-            { role: filter },
+            { first_name: filter },
+            { last_name: filter },
+            { role_type: filter },
           ],
-          [Op.and]: [{ isDeleted: false }],
+          [Op.and]: [{ is_deleted: false }],
         }
-      : { isDeleted: false };
+      : { is_deleted: false };
 
     const users = await User.findAll({
       where: condition,
-      include: [{ model: FeedbackCustomer, include: [Feedback] },db.role],
-      attributes: { exclude: ["role", "password"] },
+      include: [{ model: Feedback, include: [FeedbackCustomer] },db.role],
+      attributes: { exclude: ["role_type", "password"] },
     });
     if (users.length === 0) {
       res.status(200).send({
@@ -420,45 +420,45 @@ exports.updateUser = async (req, res) => {
     if (req.file) {
       await getImageUrl(req.file).then((imgUrl) => {
         imagePath = imgUrl;
-        body["profilPic"] = imgUrl;
+        body["profile_pic"] = imgUrl;
       });
     }
 
     try {
-      User.findOne({ where: { id: id, isDeleted: false } })
+      User.findOne({ where: { id: id, is_deleted: false } })
         .then((userdata) => {
           if (!userdata) {
             res.status(400).send({ message: "user not found" });
           }
 
           var userRequest = {
-            brokerageName: body.brokerageName,
-            officeAddress: body.officeAddress,
+            brokerage_name: body.brokerage_name,
+            office_address: body.office_address,
             city: body.city,
             country: body.country,
-            firstName: body.firstName,
-            lastName: body.lastName,
+            first_name: body.first_name,
+            last_name: body.last_name,
             phone: body.phone,
-            ladlinePhone: body.ladlinePhone,
+            landline_phone: body.landline_phone,
             gender: body.gender,
-            profilPic: imagePath,
+            profile_pic: imagePath,
             email: body.email,
-            trakheesiNumber: body.trakheesiNumber,
+            trakheesi_number: body.trakheesi_number,
             ORN: body.ORN,
-            reraNumber: body.reraNumber,
+            rera_number: body.rera_number,
             BRN: body.BRN,
             passport: body.passport,
-            passportExpiry: body.passportExpiry,
-            reraNumber: body.reraNumber,
-            organizationName: body.organizationName,
+            passport_expiry: body.passport_expiry,
+            rera_number: body.rera_number,
+            organization_name: body.organization_name,
             extension: body.extension,
-            noOfProperty: body.noOfProperty,
-            role: body.role,
+            no_of_property: body.no_of_property,
+            role_type: body.role_type,
             status: body.status,
           };
 
           if (req.file === undefined) {
-            userRequest.profilPic = userdata.dataValues.profilPic;
+            userRequest.profile_pic = userdata.dataValues.profile_pic;
           }
 
           User.update(body, { where: { id: id } })
@@ -494,11 +494,11 @@ exports.deleteUser = async (req, res) => {
       return;
     }
     const userData = await User.findByPk(id);
-    if (userData.dataValues.isDeleted === true) {
+    if (userData.dataValues.is_deleted === true) {
       res.status(201).send({ message: "already deleted." });
     } else {
       await User.update(
-        { isDeleted: true },
+        { is_deleted: true },
         {
           where: { id: id },
         }
@@ -531,36 +531,36 @@ exports.deleteUser = async (req, res) => {
 
 exports.registration = async (req, res) => {
   const {
-    brokerageName,
-    officeAddress,
+    brokerage_name,
+    office_address,
     city,
     country,
-    firstName,
-    lastName,
+    first_name,
+    last_name,
     phone,
     gender,
-    profilPic,
+    profile_pic,
     email,
     password,
-    trakheesiNumber,
+    trakheesi_number,
     ORN,
-    reraNumber,
+    rera_number,
     BRN,
     passport,
-    passportExpiry,
-    organizationName,
-    ladlinePhone,
+    passport_expiry,
+    organization_name,
+    landline_phone,
     extension,
-    brokerageEmail,
-    noOfProperty,
-    role,
-    addressLine,
-    numberOfLocality,
-    localityName,
-    brokerageId,
-    licensingEmmirate,
-    propertyManage,
-    customerFeedback,
+    brokerage_email,
+    no_of_property,
+    role_type,
+    address_line,
+    number_of_locality,
+    locality_name,
+    brokerage_id,
+    licensing_emmirate,
+    property_manage,
+    customer_feedback,
   } = req.body;
   try {
     let imagePath = "";
@@ -571,13 +571,13 @@ exports.registration = async (req, res) => {
     }
 
     const alreadyExistUser = await User.findOne({
-      where: { email: email, isDeleted: false },
+      where: { email: email, is_deleted: false },
     });
     if (alreadyExistUser) {
       res.status(201).send({ message: "already exist with this email" });
       return;
     }
-    const checkrole = await Role.findOne({ where: { id: role } });
+    const checkrole = await Role.findOne({ where: { id: role_type } });
     if (!checkrole) {
       res.status(201).send({ message: "role not exist!" });
       return;
@@ -585,50 +585,50 @@ exports.registration = async (req, res) => {
     var hashPlainText = await hashPassword(password); // encrypted
     var userRequest = {
 
-      brokerageName,
-      officeAddress,
+      brokerage_name,
+      office_address,
       city,
       country,
-      firstName,
-      lastName,
+      first_name,
+      last_name,
       phone,
       gender,
-      profilPic: imagePath,
+      profile_pic: imagePath,
       email,
       password: hashPlainText,
-      trakheesiNumber,
+      trakheesi_number,
       ORN,
-      reraNumber,
+      rera_number,
       BRN,
       passport,
-      passportExpiry,
-      organizationName,
-      ladlinePhone,
+      passport_expiry,
+      organization_name,
+      landline_phone,
       extension,
-      brokerageEmail,
-      noOfProperty,
-      role,
-      addressLine,
-      numberOfLocality,
-      localityName,
-      brokerageId,
-      licensingEmmirate,
-      propertyManage,
-      customerFeedback,
+      brokerage_email,
+      no_of_property,
+      role_type,
+      address_line,
+      number_of_locality,
+      locality_name,
+      brokerage_id,
+      licensing_emmirate,
+      property_manage,
+      customer_feedback,
     };
     await User.create(userRequest)
       .then(async (response) => {
         if (response) {
-            const newFeed = await FeedbackCustomer.findOne({
-              include: [{ model: Feedback, include: [User], where: { userId: response.dataValues.id } }],
-            });
+            // const newFeed = await FeedbackCustomer.findOne({
+            //   include: [{ model: Feedback, include: [User], where: { user_id: response.dataValues.id } }],
+            // });
           
             const token = await generateToken({
               id: response.dataValues.id,
               email: response.dataValues.email,
-              firstName: response.dataValues.firstName,
-              lastName: response.dataValues.lastName,
-              role: role,
+              first_name: response.dataValues.first_name,
+              last_name: response.dataValues.last_name,
+              role_type: role_type,
             });
             res
               .status(200)
@@ -640,7 +640,7 @@ exports.registration = async (req, res) => {
               .send({
                 accessToken: token,
                 data: response.dataValues,
-                newFeed:newFeed
+                // newFeed:newFeed
               });
         }
       })

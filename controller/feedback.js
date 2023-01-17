@@ -14,25 +14,23 @@ exports.createLink = async (req, res) => {
     }
     const feed = {
       link: req.body.link,
-      userId: req.body.userId,
+      user_id: req.body.user_id,
+    };
+    const detailss = {
+      customer_detail: req.body.customer_detail,
     };
     const feedbacks = await Feedback.create(feed);
     if (feedbacks) {
-      const customerData = {
-        customerDetails: req.body.customerDetails,
-        feedbackId: feedbacks.dataValues.id,
-      };
-      var saveCustomerId = await FeedbackCustomer.create(customerData);
-      if (saveCustomerId) {
-        const newuser = await User.findOne({
-          where: { id: req.body.userId, isDeleted: false },
-        });
-        newuser.customerFeedback = saveCustomerId.dataValues.id;
-        newuser.save();
-        res.status(200).send({
-          message: "feedback create successfully...",
-        });
-      }
+      const feedbackid = feedbacks.dataValues.id;
+      detailss.customer_detail.forEach(async (element, index, array) => {
+        let reqestData = {
+          feedback_id: feedbackid,
+          customer_name: element.customer_name,
+          customer_number: element.customer_number,
+        };
+        await FeedbackCustomer.create(reqestData)
+      });
+      res.send({message:"feedback created successfully"})
     }
   } catch (error) {
     res.status(400).send({
@@ -53,10 +51,10 @@ exports.findAllFeedback = async (req, res) => {
   }
 };
 
-exports.findAllCustomerFeedback = async (req, res) => {
+exports.findAllcustomer_feedback = async (req, res) => {
   try {
     const newFeed = await FeedbackCustomer.findAll({
-      include: [{ model: Feedback, include: [User] }],
+      include: [{ model: Feedback}],
     });
     res.status(200).send(newFeed);
   } catch (error) {
@@ -67,11 +65,12 @@ exports.findAllCustomerFeedback = async (req, res) => {
   }
 };
 
-exports.findCustomerFeedbackByUserId = async (req, res) => {
+exports.findcustomer_feedbackByUserId = async (req, res) => {
   var id = req.params.id;
   try {
     const newFeed = await FeedbackCustomer.findAll({
-      include: [{ model: Feedback, include: [User], where: { userId: id } }],
+      // include: [{ model: Feedback, include: [FeedbackCustomer] },db.role],
+      include: [{ model: Feedback, where: { user_id: id } }],
     });
     res.status(200).send(newFeed);
   } catch (error) {

@@ -13,11 +13,11 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         unique: true,
       },
-      brokerageName: {
+      brokerage_name: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      officeAddress: {
+      office_address: {
         type: DataTypes.STRING,
         allowNull: true,
       },
@@ -29,11 +29,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      firstName: {
+      first_name: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      lastName: {
+      last_name: {
         type: DataTypes.STRING,
         allowNull: true,
       },
@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
         //     },
         // },
       },
-      ladlinePhone: {
+      landline_phone: {
         type: DataTypes.STRING,
         allowNull: true,
         // validate: {
@@ -63,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      profilPic: {
+      profile_pic: {
         type: DataTypes.STRING,
         allowNull: true,
       },
@@ -81,7 +81,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      trakheesiNumber: {
+      trakheesi_number: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
@@ -93,7 +93,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      passportExpiry: {
+      passport_expiry: {
         type: DataTypes.STRING,
         allowNull: true,
       },
@@ -101,11 +101,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      reraNumber: {
+      rera_number: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      organizationName: {
+      organization_name: {
         type: DataTypes.STRING,
         allowNull: true,
       },
@@ -114,7 +114,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         defaultValue: "",
       },
-      noOfProperty: {
+      no_of_property: {
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0,
@@ -124,54 +124,54 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         defaultValue: "Inactive",
       },
-      role: {
+      role_type: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      addressLine: {
+      address_line: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      numberOfLocality: {
+      number_of_locality: {
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0,
       },
-      localityName: {
+      locality_name: {
         type: DataTypes.JSON,
         allowNull: true,
       },
-      licensingEmmirate: {
+      licensing_emmirate: {
         type: DataTypes.BOOLEAN,
         allowNull: true,
       },
-      brokerageEmail: {
+      brokerage_email: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      propertyManage: {
+      property_manage: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      brokerageId: {
+      brokerage_id: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      customerFeedback: {
+      customer_feedback: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      isDeleted: {
+      is_deleted: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
-      deletedBy: {
+      deleted_by: {
         type: DataTypes.INTEGER,
       },
     },
     {
       sequelize,
-      modelName: "UserDetails",
+      modelName: "users",
     }
   );
   return User;
