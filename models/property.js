@@ -150,7 +150,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "property_details",
-    //   underscored:true,
     }
   );
   return Property;

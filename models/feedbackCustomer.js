@@ -23,17 +23,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      created_at: {
-        type: DataTypes.DATE,
-      },
-      updated_at: {
-        type: DataTypes.DATE,
-      },
     },
     {
       sequelize,
       modelName: "customer_detail_feedback",
-      // underscored:true,
     }
   );
   return FeedbackCustomer;

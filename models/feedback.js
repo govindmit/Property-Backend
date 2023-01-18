@@ -18,17 +18,10 @@ module.exports = (sequelize, DataTypes) => {
       link: {
         type: DataTypes.STRING,
       },
-      created_at: {
-        type: DataTypes.DATE,
-      },
-      updated_at: {
-        type: DataTypes.DATE,
-      },
     },
     {
       sequelize,
       modelName: "customer_feedback",
-      // underscored:true,
     }
   );
   return Feedback;

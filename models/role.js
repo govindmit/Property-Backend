@@ -23,19 +23,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
-      created_at: {
-        // allowNull: false,
-        type: DataTypes.DATE,
-      },
-      updated_at: {
-        // allowNull: false,
-        type: DataTypes.DATE,
-      },
     },
     {
       sequelize,
-      // underscored:true,
-      // timestamps:true,
       modelName: "role",
     }
   );
