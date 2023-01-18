@@ -9,16 +9,16 @@ module.exports = app => {
   
   router.get("/getusers", webProtected, findAllUserWithSearch);
   router.post("/signin", signin);
-  router.post("/createuser", webProtected, upload.single("profilPic"), createUser);
+  router.post("/createuser", webProtected, upload.single("profile_pic"), createUser);
   router.get("/:id?", webProtected, finduser);
   router.delete("/deleteuser/:id?", webProtected, deleteUser);
-  router.put("/:id?", webProtected, upload.single("profilPic"), updateUser);
+  router.put("/:id?", webProtected, upload.single("profile_pic"), updateUser);
   
   router.post("/forgotpassword", sendforgetLink);
   router.put("/changepassword", [authJwt.verifyToken], resetPassword);
   router.post("/resetPassword", [authJwt.verifyResetToken], forgotPassword);
  
-  router.post("/registration", webProtected, upload.single("profilPic"), registration);
+  router.post("/registration", webProtected, upload.single("profile_pic"), registration);
 
 
   app.use("/api/user", router);

@@ -2,8 +2,7 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class FeedbackCustomer extends Model {
-    static associate(models) {
-    }
+    static associate(models) {}
   }
   FeedbackCustomer.init(
     {
@@ -12,23 +11,22 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      feedbackId: {
+      feedback_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      customerDetails: {
-        type: DataTypes.JSON,
-      }, 
-      createdAt: {
-        type: DataTypes.DATE,
+      customer_name: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
-      updatedAt: {
-        type: DataTypes.DATE,
+      customer_number: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
     },
     {
       sequelize,
-      modelName: "FeedbackCustomer", 
+      modelName: "customer_detail_feedback",
     }
   );
   return FeedbackCustomer;

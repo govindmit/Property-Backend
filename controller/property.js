@@ -16,7 +16,7 @@ const Property = db.property;
 
 exports.addListing = async (req, res) => {
 
-    const { userId, firstName, lastName, uploadFile, propertyName, propertyAddress, addressLine2, city, country, propertySaleStatus, propertyPurpose, propertyCategory, propertyPermit, propertyType, beds, baths, sqft, completionStatus, ownershipStatus, amenities, floorRange, saleValue, paymentMethod, rentPerYear, rentFrequency, contractPeriod, vacancyNoticePeriod, maintananceFee, paidBy,
+    const { user_id, first_name, last_name, upload_file, property_name, property_address, address_line2, city, country, property_sale_status, property_purpose, property_category, property_permit, property_type, beds, baths, sqft, completion_status, ownership_status, amenities, floor_range, sale_value, payment_method, rent_per_year, rent_frequency, contract_period, vacancy_notice_period, maintanance_fee, paid_by,
         status
     } = req.body;
 
@@ -30,35 +30,35 @@ exports.addListing = async (req, res) => {
         }
 
         var requestData = {
-            userId,
-            firstName,
-            lastName,
-            uploadFile: imagePath,
-            propertyName,
-            propertyAddress,
-            addressLine2,
+            user_id,
+            first_name,
+            last_name,
+            upload_file: imagePath,
+            property_name,
+            property_address,
+            address_line2,
             city,
             country,
-            propertySaleStatus,
-            propertyPurpose,
-            propertyCategory,
-            propertyPermit,
-            propertyType,
+            property_sale_status,
+            property_purpose,
+            property_category,
+            property_permit,
+            property_type,
             beds,
             baths,
             sqft,
-            completionStatus,
-            ownershipStatus,
+            completion_status,
+            ownership_status,
             amenities,
-            floorRange,
-            saleValue,
-            paymentMethod,
-            rentPerYear,
-            rentFrequency,
-            contractPeriod,
-            vacancyNoticePeriod,
-            maintananceFee,
-            paidBy,
+            floor_range,
+            sale_value,
+            payment_method,
+            rent_per_year,
+            rent_frequency,
+            contract_period,
+            vacancy_notice_period,
+            maintanance_fee,
+            paid_by,
             status
         };
 
@@ -79,7 +79,8 @@ exports.addListing = async (req, res) => {
 exports.findListing = async (req, res) => {
     try {
 
-        const users = await Property.findAll();
+        const users = await Property.findAll({include: User, attributes: { exclude: ['password'] }});
+
         if(users){
 
             res.status(200).send(users)
