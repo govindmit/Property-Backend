@@ -7,7 +7,7 @@ module.exports = app => {
 
     router.post("/createrole", role.createRole);
     router.get("/getrole/:id?",role.findAllRoles);
-    router.post('/genratetoken', role.getAuthToken)
+    router.post('/genrate_token', role.getAuthToken)
     app.use('/api/role', router);
   };
   

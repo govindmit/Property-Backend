@@ -26,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      description: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       upload_file: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -132,7 +136,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-
+      home_highlight: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
       status: {
         type: DataTypes.STRING,
         allowNull: true,

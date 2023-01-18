@@ -16,7 +16,7 @@ module.exports = app => {
   
   router.post("/forgotpassword", sendforgetLink);
   router.put("/changepassword", [authJwt.verifyToken], resetPassword);
-  router.post("/resetPassword", [authJwt.verifyResetToken], forgotPassword);
+  router.post("/resetpassword", [authJwt.verifyResetToken], forgotPassword);
  
   router.post("/registration", webProtected, upload.single("profile_pic"), registration);
 

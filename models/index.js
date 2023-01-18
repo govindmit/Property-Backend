@@ -37,5 +37,7 @@ db.feedback.belongsTo(db.User, { foreignKey: "user_id" });
 db.feedback.hasMany(db.feedbackCustomer, { foreignKey: "feedback_id" });
 db.feedbackCustomer.belongsTo(db.feedback, { foreignKey: "feedback_id" });
 
+db.User.hasMany(db.property, { foreignKey: "user_id" });
+db.property.belongsTo(db.User, { foreignKey: "user_id" });
 
 module.exports = db;
