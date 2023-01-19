@@ -1,33 +1,28 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Role extends Model {
-    static associate(models) {
-      // define association here
-    }
+  class Feedback extends Model {
+    static associate(models) {}
   }
-  Role.init(
+  Feedback.init(
     {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
-      title: {
-        type: DataTypes.STRING,
+      user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
       },
-      description: {
+      link: {
         type: DataTypes.STRING,
-      },
-      is_deleted: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
       },
     },
     {
       sequelize,
-      modelName: "role",
+      modelName: "customer_feedback",
     }
   );
-  return Role;
+  return Feedback;
 };

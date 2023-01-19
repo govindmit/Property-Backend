@@ -22,7 +22,7 @@ exports.createRole = async (req, res) => {
         const role = {
           title: req.body.title,
           description: req.body.description,
-          isDeleted: false
+          is_deleted: false
         };
 
         // Save Role in the database
@@ -54,7 +54,7 @@ exports.findAllRoles = async (req, res) => {
   try {
     const id = req.params.id;
     if (id) {
-      await Role.findOne({ where: { id: id, isDeleted: false } })
+      await Role.findOne({ where: { id: id, is_deleted: false } })
         .then(data => {
           res.status(200).send(data);
         })
@@ -66,7 +66,7 @@ exports.findAllRoles = async (req, res) => {
         });
       return
     }
-    await Role.findAll({ where: { isDeleted: false } })
+    await Role.findAll({ where: { is_deleted: false } })
       .then(data => {
         res.status(200).send(data);
       })
