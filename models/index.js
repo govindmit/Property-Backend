@@ -27,4 +27,7 @@ db.role.hasMany(db.User, {foreignKey: 'role'});
 db.User.belongsTo(db.role, {foreignKey: 'role'})
 
 
+db.User.hasMany(db.property, {foreignKey: 'userId'});
+db.property.belongsTo(db.User, {foreignKey: 'userId'})
+
 module.exports = db;

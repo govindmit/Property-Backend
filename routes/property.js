@@ -7,7 +7,7 @@ module.exports = (app) =>{
     app.use(express.static(__dirname + '/public'));
     app.use('/upload', express.static('upload'))
     router.post('/addListing',upload.single('uploadFile'),webProtected,addListing);
-    router.get('/',findListing);
+    router.get('/',webProtected,findListing);
 
 
     app.use('/api/listing',router);
