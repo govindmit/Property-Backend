@@ -13,6 +13,7 @@ const storage = multer.diskStorage({
 exports.upload = multer({ storage: storage });
 
 const Property = db.property;
+const User = db.User;
 
 exports.addListing = async (req, res) => {
 
@@ -80,13 +81,11 @@ exports.findListing = async (req, res) => {
     try {
 
         const users = await Property.findAll({include: User, attributes: { exclude: ['password'] }});
-
+   console.log("users-----",users)
         if(users){
-
             res.status(200).send(users)
         }else{
-            res.status(200).send("no listing")
-            
+            res.status(200).send("no listing") 
         }
 
     } catch (error) {
