@@ -36,7 +36,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       property_name: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
+        unique: true,
+      },
+      slug :{
+        type:DataTypes.STRING,
       },
       property_address: {
         type: DataTypes.STRING,

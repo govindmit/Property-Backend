@@ -1,5 +1,5 @@
 module.exports = (app) =>{
-  const { addListing,upload,findListing ,propertyByUserId} = require('../controller/property');
+  const { addListing,upload,findListing ,findPropertyById} = require('../controller/property');
 const { webProtected } = require('../helper/auth');
   
   const router = require('express').Router();
@@ -8,11 +8,7 @@ const { webProtected } = require('../helper/auth');
   app.use('/upload', express.static('upload'))
   router.post('/addListing',upload.single('upload_file'),webProtected,addListing);
   router.get('/',webProtected,findListing);
-
-  router.post('/get_property_by_id',webProtected,propertyByUserId);
-
-
-
+  router.get('/:slug',webProtected ,findPropertyById);
 
   app.use('/api/listing',router);
 }
