@@ -371,17 +371,7 @@ exports.findAllUserWithSearch = async (req, res) => {
   try {
     const filter = req.query.search;
 
-    var condition = filter
-      ? {
-          [Op.or]: [
-            { email: filter },
-            { first_name: filter },
-            { last_name: filter },
-            { role_type: filter },
-          ],
-          [Op.and]: [{ is_deleted: false }],
-        }
-      : { is_deleted: false };
+    var condition = filter ? { [Op.or]: [ { email: filter },{ first_name: filter }, { last_name: filter }, { role_type: filter }, ], [Op.and]: [{ is_deleted: false }],}: { is_deleted: false };
 
     const users = await User.findAll({
       where: condition,
