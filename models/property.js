@@ -136,13 +136,19 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-
+      description:{
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      home_highlight: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
       status: {
         type: DataTypes.STRING,
         allowNull: true,
         defaultValue: "Inactive",
       },
-
       is_deleted: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
