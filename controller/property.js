@@ -27,11 +27,6 @@ exports.addListing = async (req, res) => {
     try {
         let imagePath = "";
         let propertySlug = ""
-        // if (req.files) {
-        //     await getImageUrl(req.files).then(imgUrl => {
-        //         imagePath = imgUrl;
-        //     })
-        // }
 
         if (req.body.property_name) {
             await generateSlug(req.body.property_name).then(pslug => {
@@ -39,26 +34,21 @@ exports.addListing = async (req, res) => {
             })
         }
 
-  
         var icon = [];
 
         for (var i = 0; i < req.files.length; i++) {
-               if (req.files[i].fieldname === 'upload_file') {
+            if (req.files[i].fieldname === 'upload_file') {
                 await getImageUrl(req.files[i]).then(imgUrl => {
                     imagePath = imgUrl;
                 })
-                // imagePath = req.files[i].path             
             }
             await getImageUrl(req.files[i]).then(imgUrl => {
                 var fieldname = req.files[i].fieldname
                 home_highlight[fieldname] = imgUrl
-                console.log("iii",i)
                 if (i >= 0) {
                     icon.push(imgUrl)
-                    
+
                 }
-                console.log("iii",icon)
-              
                 for (var k = 0; k < home_highlight.length; k++) {
                     home_highlight[k]['icon'] = icon[k]
                 }
@@ -117,18 +107,56 @@ exports.addListing = async (req, res) => {
     }
 }
 
+// exports.findListing = async (req, res) => {
+//     try {
+
+//         const f1 = req.query.property_purpose;
+//         const f2 = req.query.property_category;
+//         const beds = req.query.beds;
+
+//         var condition = f1 ? { [Op.or]: [{ property_purpose: f1 }], [Op.and]: [{ is_deleted: false }], } : { is_deleted: false };
+
+//         // var condition = { [Op.and]: [{ property_purpose: f1 },{ property_category: f2 }] }
+
+//         const users = await Property.findAll({ include: User, attributes: { exclude: ['password'] } });
+
+//         if (users) {
+//             res.status(200).send(users)
+//         } else {
+//             res.status(200).send("no listing")
+//         }
+
+//     } catch (error) {
+//         res.status(400).send({
+//             message: 'Oops! something went wrong while fetching the users',
+//             subError: error.message
+//         })
+//     }
+
+// };
+
+
 exports.findListing = async (req, res) => {
     try {
 
         const f1 = req.query.property_purpose;
         const f2 = req.query.property_category;
-        // var condition = f1 ? {[Op.or]: [{ property_purpose: f1 }], [Op.and]: [{ is_deleted: false }], }:{ is_deleted: false };
+        const beds = req.query.beds;
 
-        var condition = { [Op.or]: [{ property_purpose: f1 }], [Op.or]: [{ property_category: f2 }] }
+        const filters = req.query;
 
-        const users = await Property.findAll({ where: condition, include: User, attributes: { exclude: ['password'] } });
+        const users = await Property.findAll({ include: User, attributes: { exclude: ['password'] } });
+
         if (users) {
-            res.status(200).send(users)
+            const filteredUsers = users.filter(user => {
+                let isValid = true;
+                for (key in filters) {
+                  console.log(key, user[key], filters[key]);
+                  isValid = isValid && user[key] == filters[key];
+                }
+                return isValid;
+              });
+            res.status(200).send(filteredUsers)
         } else {
             res.status(200).send("no listing")
         }
