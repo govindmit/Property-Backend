@@ -1,13 +1,13 @@
 
 module.exports = app => {
 
-    const role = require("../controller/role.controller");
-    var router = require("express").Router();
-  
+  const role = require("../controller/role.controller");
+  var router = require("express").Router();
 
-    router.post("/createrole", role.createRole);
-    router.get("/getrole/:id?",role.findAllRoles);
-    router.post('/genrate_token', role.getAuthToken)
-    app.use('/api/role', router);
+
+  router.post("/createrole", role.createRole);
+  router.get("/getrole/:id?",role.findAllRoles);
+  router.post('/genratetoken', role.getAuthToken)
+  app.use('/api/role', router);
   };
   

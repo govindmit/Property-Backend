@@ -1,7 +1,7 @@
 const { getImageUrl } = require("../helper/imageUpload");
 const db = require("../models");
 const multer = require("multer");
-const { generateSlug } = require('../helper/propertySlug.helper');
+const { generateSlug } = require("../helper/propertySlug.helper");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, `./upload/`);
@@ -21,7 +21,6 @@ exports.addListing = async (req, res) => {
     user_id,
     first_name,
     last_name,
-    description,
     upload_file,
     property_name,
     slug,
@@ -49,34 +48,47 @@ exports.addListing = async (req, res) => {
     vacancy_notice_period,
     maintanance_fee,
     paid_by,
-    home_highlight,
     status,
+    description,
+    home_highlight,
   } = req.body;
 
   try {
     let imagePath = "";
-    let propertySlug= ""
-    if (req.file) {
-        await getImageUrl(req.file).then(imgUrl => {
-            imagePath = imgUrl;
-        })
+    let propertySlug = "";
+
+    if (req.body.property_name) {
+      await generateSlug(req.body.property_name).then((pslug) => {
+        propertySlug = pslug;
+      });
     }
 
-    if(req.body.property_name){
-        await generateSlug(req.body.property_name).then(pslug=>{
-            propertySlug = pslug;
-        })
+    var icon = [];
+    for (var i = 0; i < req.files.length; i++) {
+      if (req.files[i].fieldname === "upload_file") {
+        await getImageUrl(req.files[i]).then((imgUrl) => {
+          imagePath = imgUrl;
+        });
+      }
+      await getImageUrl(req.files[i]).then((imgUrl) => {
+        var fieldname = req.files[i].fieldname;
+        home_highlight[fieldname] = imgUrl;
+        if (i >= 0) {
+          icon.push(imgUrl);
+        }
+        for (var k = 0; k < home_highlight.length; k++) {
+          home_highlight[k]["icon"] = icon[k];
+        }
+      });
     }
-
 
     var requestData = {
       user_id,
       first_name,
       last_name,
-      description,
       upload_file: imagePath,
       property_name,
-      slug:propertySlug,
+      slug: propertySlug,
       property_address,
       address_line2,
       city,
@@ -101,9 +113,11 @@ exports.addListing = async (req, res) => {
       vacancy_notice_period,
       maintanance_fee,
       paid_by,
+      description,
       home_highlight,
       status,
     };
+
     await Property.create(requestData).then((data) => {
       if (!data) {
         res.status(400).send({ message: "somthing went wrong to add list." });
@@ -114,10 +128,12 @@ exports.addListing = async (req, res) => {
       }
     });
   } catch (err) {
-    res.status(400).send({
-      ErrMessage: err.message,
-      subError: "Opps! something went wrong to create listing",
-    });
+    res
+      .status(400)
+      .send({
+        ErrMessage: err.message,
+        subError: "Opps! something went wrong to create listing",
+      });
   }
 };
 
@@ -145,18 +161,18 @@ exports.findPropertyById = async (req, res) => {
   try {
     const slug = req.params.slug;
     if (!slug) {
-      res.status(201).send({ message: 'property slug required !' })
-      return
+      res.status(201).send({ message: "property slug required !" });
+      return;
     }
     const property = await Property.findOne({ where: { slug: slug } });
-    if(!property){
-      res.status(201).send({message:'No property slug found'})
-
-    }else{
-
-        res.status(200).send(property)
+    if (!property) {
+      res.status(201).send({ message: "No property slug found" });
+    } else {
+      res.status(200).send(property);
     }
   } catch (error) {
-    res.status(400).send({ message: 'Oops! something went wrong in get Property' })
+    res
+      .status(400)
+      .send({ message: "Oops! something went wrong in get Property" });
   }
-}
+};
