@@ -21,7 +21,6 @@ exports.getImageUrl = async (pics)=>{
       },
       data: data,
     };
-
    await axios(config)
       .then(function (response) {
         console.log(response.data.url);
@@ -31,5 +30,35 @@ exports.getImageUrl = async (pics)=>{
         console.log(error);
       });
     return imageurl
+  }
+
+
+  exports.getVideoUrl = async (pics)=>{
+    var videUrl = '';
+    var data = new FormData();
+    data.append(
+      "file",
+      fs.createReadStream(pics.path)
+    );
+    data.append("upload_preset", "chat-app");
+    data.append("cloud_name", "piyushproj");
+
+    var config = {
+      method: "post",
+      url: "https://api.cloudinary.com/v1_1/piyushproj/video/upload",
+      headers: {
+        ...data.getHeaders(),
+      },
+      data: data,
+    };
+   await axios(config)
+      .then(function (response) {
+        console.log(response.data.url);
+        videUrl = response.data.url
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    return videUrl
   }
   
