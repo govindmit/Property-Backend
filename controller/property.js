@@ -1,4 +1,9 @@
-const { getImageUrl, getVideoUrl } = require("../helper/imageUpload");
+const {
+  getImageUrl,
+  getVideoUrl,
+  getpdfUrl,
+  getpdfUrl1,
+} = require("../helper/imageUpload");
 const db = require("../models");
 const Op = db.Sequelize.Op;
 const multer = require("multer");
@@ -19,6 +24,7 @@ const Property = db.property;
 const User = db.User;
 
 exports.addListing = async (req, res) => {
+  const url = new URL(`${req.protocol}://${req.get("host")}${req.originalUrl}`);
   const {
     user_id,
     first_name,
@@ -41,7 +47,8 @@ exports.addListing = async (req, res) => {
     completion_status,
     ownership_status,
     amenities,
-    floor_range,
+    occupancy_status,
+
     sale_value,
     payment_method,
     rent_per_year,
@@ -50,18 +57,26 @@ exports.addListing = async (req, res) => {
     vacancy_notice_period,
     maintanance_fee,
     paid_by,
+    landmark,
+    upload_video_title,
+    upload_video_description,
+    maid_room,
     status,
+    floor_planes,
+    notes,
     description,
     home_highlight,
+    upload_docs,
+    property_condition,
   } = req.body;
 
-  // console.log('upload_file',req.files);
   try {
     let imagePath = [];
     let videoPath = [];
-
+    let docs = [];
     let propertySlug = "";
-
+    var plan = [];
+    var plan1 = [];
     if (req.body.property_name) {
       await generateSlug(req.body.property_name).then((pslug) => {
         propertySlug = pslug;
@@ -69,7 +84,6 @@ exports.addListing = async (req, res) => {
     }
 
     var icon = [];
-
     for (var i = 0; i < req.files.length; i++) {
       if (req.files[i].fieldname === "upload_file") {
         if (req.files[i].mimetype === "video/mp4") {
@@ -82,19 +96,69 @@ exports.addListing = async (req, res) => {
           });
         }
       }
-      await getImageUrl(req.files[i]).then((iconUrl) => {
-        var fieldname = req.files[i].fieldname;
-        home_highlight[fieldname] = iconUrl;
-        if (i >= 0) {
-          icon.push(iconUrl);
-        }
-        for (var k = 0; k < home_highlight.length; k++) {
-          home_highlight[k]["icon"] = icon[k];
-        }
-      });
+      // await getIconUrl(req.files[i]).then((imgUrl) => {
+      //   // console.log('###$$$$$',imgUrl);
+      //   var fieldname = req.files[i].fieldname;
+      //   // console.log('fieldnamefieldname',fieldname);
+      //   home_highlight[fieldname] = imgUrl;
+      //   if (i >= 0) {
+      //     icon.push(imgUrl);
+      //   }
+      //   // console.log('############',icon);
+      //   for (var k = 0; k < home_highlight.length; k++) {
+      //     home_highlight[k]["icon"] = icon[k];
+      //   }
+      // });
     }
-    let arrImg = { imagee: imagePath, videos: videoPath };
 
+    for (var i = 0; i < req.files.length; i++) {
+      if (req.files[i].fieldname != "upload_file") {
+        await getImageUrl(req.files[i]).then((imgUrl) => {
+          var fieldname = req.files[i].fieldname;
+          home_highlight[fieldname] = imgUrl;
+          if (i >= 0) {
+            icon.push(imgUrl);
+          }
+          for (var k = 0; k < home_highlight.length; k++) {
+            home_highlight[k]["icon"] = icon[k];
+          }
+        });
+      }
+    }
+    for (var i = 0; i < req.files.length; i++) {
+      if (req.files[i].fieldname === "upload_docs") {
+        await getpdfUrl(req.files[i]).then((imgUrl) => {
+          docs.push(url.origin + imgUrl);
+        });
+      }
+    }
+    for (var i = 0; i < req.files.length; i++) {
+      if (req.files[i].fieldname === "floor_planes[0][plan_drawing]") {
+        await getpdfUrl1(req.files[i]).then((imgUrl) => {
+          var fieldname = req.files[i].fieldname;
+          floor_planes[fieldname] = imgUrl;
+          if (i >= 0) {
+            plan.push(url.origin + imgUrl);
+          }
+          for (var k = 0; k < floor_planes.length; k++) {
+            floor_planes[k]["plan_drawing"] = plan;
+          }
+        });
+      } else if (req.files[i].fieldname === "floor_planes[1][plan_drawing]") {
+        await getpdfUrl1(req.files[i]).then((imgUrl) => {
+          var fieldname = req.files[i].fieldname;
+          floor_planes[fieldname] = imgUrl;
+          if (i >= 0) {
+            plan1.push(url.origin + imgUrl);
+          }
+          for (var k = 0; k < floor_planes.length; k++) {
+            floor_planes[k]["plan_drawing"] = plan1;
+          }
+        });
+      }
+    }
+   
+    let arrImg = { imagee: imagePath, videos: videoPath };
     var requestData = {
       user_id,
       first_name,
@@ -116,22 +180,28 @@ exports.addListing = async (req, res) => {
       sqft,
       completion_status,
       ownership_status,
+      upload_video_title,
+      upload_video_description,
       amenities,
-      floor_range,
+      floor_planes,
+      occupancy_status,
       sale_value,
       payment_method,
       rent_per_year,
       rent_frequency,
+      maid_room,
       contract_period,
       vacancy_notice_period,
       maintanance_fee,
+      property_condition,
       paid_by,
+      notes,
       description,
       home_highlight,
       status,
+      landmark,
+      upload_docs: docs,
     };
-
-    console.log(requestData);
 
     await Property.create(requestData).then((data) => {
       if (!data) {

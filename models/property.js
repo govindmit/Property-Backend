@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       upload_docs: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
         allowNull: true,
       },
       visiting_time: {
@@ -43,8 +43,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
       },
-      slug :{
-        type:DataTypes.STRING,
+      slug: {
+        type: DataTypes.STRING,
       },
       property_address: {
         type: DataTypes.STRING,
@@ -102,6 +102,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      upload_video_title: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      upload_video_description: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       ownership_status: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -135,6 +143,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      maid_room: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+      },
+      notes: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       maintanance_fee: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -143,7 +159,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      description:{
+      description: {
         type: DataTypes.TEXT,
         allowNull: true,
       },
@@ -155,11 +171,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.JSON,
         allowNull: true,
       },
-      occupancy_status:{
+      occupancy_status: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      property_condition:{
+      property_condition: {
         type: DataTypes.STRING,
         allowNull: true,
       },
