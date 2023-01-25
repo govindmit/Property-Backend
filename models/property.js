@@ -179,11 +179,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      // status: {
-      //   type: DataTypes.STRING,
-      //   allowNull: true,
-      //   defaultValue: "Inactive",
-      // },
+      open_house_time: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      visitedNumberOfTime: { type: DataTypes.INTEGER, allowNull: true },
       is_deleted: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
