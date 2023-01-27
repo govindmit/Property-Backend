@@ -134,32 +134,32 @@ exports.addListing = async (req, res) => {
           await getpdfUrl1(req.files[j]).then((imgUrl) => {
             var fieldname = req.files[j].fieldname;
             floor_planes[fieldname] = imgUrl;
-
             if (keyid === "floor_planes[0][plan_drawing]") {
-              plan.push(url.origin + imgUrl);
+              // plan.push(url.origin + imgUrl);
+              plan.push(imgUrl);
               // for (var k = 0; k < floor_planes.length; k++) {
               floor_planes[0]["plan_drawing"] = plan;
               // }
             } else if (keyid === "floor_planes[1][plan_drawing]") {
-              plan1.push(url.origin + imgUrl);
+              plan1.push(imgUrl);
               floor_planes[1]["plan_drawing"] = plan1;
             } else if (keyid === "floor_planes[2][plan_drawing]") {
-              plan2.push(url.origin + imgUrl);
+              plan2.push(imgUrl);
               floor_planes[2]["plan_drawing"] = plan2;
             } else if (keyid === "floor_planes[3][plan_drawing]") {
-              plan3.push(url.origin + imgUrl);
+              plan3.push(imgUrl);
               floor_planes[3]["plan_drawing"] = plan3;
             } else if (keyid === "floor_planes[4][plan_drawing]") {
-              plan4.push(url.origin + imgUrl);
+              plan4.push(imgUrl);
               floor_planes[4]["plan_drawing"] = plan4;
             } else if (keyid === "floor_planes[5][plan_drawing]") {
-              plan5.push(url.origin + imgUrl);
+              plan5.push(imgUrl);
               floor_planes[5]["plan_drawing"] = plan5;
             } else if (keyid === "floor_planes[6][plan_drawing]") {
-              plan6.push(url.origin + imgUrl);
+              plan6.push(imgUrl);
               floor_planes[6]["plan_drawing"] = plan6;
             } else if (keyid === "floor_planes[7][plan_drawing]") {
-              plan7.push(url.origin + imgUrl);
+              plan7.push(imgUrl);
               floor_planes[7]["plan_drawing"] = plan7;
             }
           });
@@ -297,7 +297,7 @@ exports.findPropertyById = async (req, res) => {
       res.status(201).send({ message: "property slug required !" });
       return;
     }
-    const property = await Property.findOne({ where: { slug: slug } });
+    const property = await Property.findOne( {include: User},{ where: { slug: slug } });
     if (!property) {
       res.status(201).send({ message: "No property slug found" });
     } else {

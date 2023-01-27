@@ -112,7 +112,8 @@ exports.getpdfUrl1 = async (pics)=>{
   };
  await axios(config)
     .then(function (response) {
-      imageurl = '/upload/'+response.data.original_filename +'.'+response.data.format
+      // imageurl = '/upload/'+response.data.original_filename +'.'+response.data.format
+      imageurl = response.data.url
     })
     .catch(function (error) {
       console.log(error);
