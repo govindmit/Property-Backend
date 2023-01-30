@@ -358,19 +358,15 @@ exports.popularProperty = async (req, res) => {
   let arrData = [];
   var newData;
   try {
-    let findproperty = await Property.findAll();
-    for (i = 0; i < findproperty.length; i++) {
-      propertyCount.push(findproperty[i].visitedNumberOfTime);
-    }
-    let sorting = propertyCount.sort().reverse();
-    for (i = 0; i < sorting.length; i++) {
-      newData = await Property.findAll({
-        where: { visitedNumberOfTime: sorting[i] },
-      });
-      arrData.push(newData);
-    }
+    let findproperty = await Property.findAll({
+      where: {
+        visitedNumberOfTime: {
+          [Op.gt]: 0
+        }
+      }
+    });
     res.status(200).send({
-      data: arrData,
+      data: findproperty,
     });
   } catch (error) {
     res.status(400).send({

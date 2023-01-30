@@ -183,7 +183,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.JSON,
         allowNull: true,
       },
-      visitedNumberOfTime: { type: DataTypes.INTEGER, allowNull: true },
+      visitedNumberOfTime: { type: DataTypes.INTEGER, allowNull: true ,defaultValue: 0,},
       is_deleted: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
