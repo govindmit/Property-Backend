@@ -33,7 +33,7 @@ app.use(cors(corsOptions));
 app.get("/", (req, res) => {
   res.json({ message: "Backend Api is working fine!" });
 });
-app.post('/genrateToken', getAuthToken)
+app.post('/genratetoken', getAuthToken)
 
 require("./routes/role.routes")(app);
 require("./routes/user.routes")(app);

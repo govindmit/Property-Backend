@@ -157,10 +157,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      customer_feedback: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-      },
       is_deleted: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,

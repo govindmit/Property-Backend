@@ -28,9 +28,9 @@ exports.createLink = async (req, res) => {
           customer_name: element.customer_name,
           customer_number: element.customer_number,
         };
-        await FeedbackCustomer.create(reqestData)
+        await FeedbackCustomer.create(reqestData);
       });
-      res.send({message:"feedback created successfully"})
+      res.send({ message: "feedback created successfully" });
     }
   } catch (error) {
     res.status(400).send({
@@ -53,8 +53,8 @@ exports.findAllFeedback = async (req, res) => {
 
 exports.findAllcustomer_feedback = async (req, res) => {
   try {
-    const newFeed = await FeedbackCustomer.findAll({
-      include: [{ model: Feedback}],
+    const newFeed = await Feedback.findAll({
+      include: [{ model: FeedbackCustomer }, db.User],
     });
     res.status(200).send(newFeed);
   } catch (error) {
@@ -68,9 +68,14 @@ exports.findAllcustomer_feedback = async (req, res) => {
 exports.findcustomer_feedbackByUserId = async (req, res) => {
   var id = req.params.id;
   try {
-    const newFeed = await FeedbackCustomer.findAll({
-      // include: [{ model: Feedback, include: [FeedbackCustomer] },db.role],
-      include: [{ model: Feedback, where: { user_id: id } }],
+    const newFeed = await User.findAll({
+      include: [
+        {
+          model: Feedback,
+          include: [FeedbackCustomer],
+          where: { user_id: id },
+        },
+      ],
     });
     res.status(200).send(newFeed);
   } catch (error) {

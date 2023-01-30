@@ -27,7 +27,15 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       upload_file: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      upload_docs: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      visiting_time: {
+        type: DataTypes.DATE,
         allowNull: true,
       },
       property_name: {
@@ -35,14 +43,18 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
       },
-      slug :{
-        type:DataTypes.STRING,
+      slug: {
+        type: DataTypes.STRING,
       },
       property_address: {
         type: DataTypes.STRING,
         allowNull: true,
       },
       address_line2: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      landmark: {
         type: DataTypes.STRING,
         allowNull: true,
       },
@@ -74,7 +86,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-
       beds: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -91,6 +102,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      upload_video_title: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      upload_video_description: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       ownership_status: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -99,10 +118,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.JSON,
         allowNull: true,
         defaultValue: [],
-      },
-      floor_range: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
       },
       sale_value: {
         type: DataTypes.INTEGER,
@@ -128,6 +143,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      maid_room: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+      },
+      notes: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       maintanance_fee: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -136,7 +159,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      description:{
+      description: {
         type: DataTypes.TEXT,
         allowNull: true,
       },
@@ -144,11 +167,23 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.JSON,
         allowNull: true,
       },
-      status: {
+      floor_planes: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      occupancy_status: {
         type: DataTypes.STRING,
         allowNull: true,
-        defaultValue: "Inactive",
       },
+      property_condition: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      open_house_time: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      visitedNumberOfTime: { type: DataTypes.INTEGER, allowNull: true },
       is_deleted: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
