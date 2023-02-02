@@ -357,21 +357,30 @@ exports.popularProperty = async (req, res) => {
   let propertyCount = [];
   let arrData = [];
   var newData;
+  const filters = req.query;
   try {
-    let findproperty = await Property.findAll();
-    for (i = 0; i < findproperty.length; i++) {
-      propertyCount.push(findproperty[i].visitedNumberOfTime);
-    }
-    let sorting = propertyCount.sort().reverse();
-    for (i = 0; i < sorting.length; i++) {
-      newData = await Property.findAll({
-        where: { visitedNumberOfTime: sorting[i] },
+
+    let findproperty = await Property.findAll({
+      where: {
+        visitedNumberOfTime: {
+          [Op.gt]: 0
+        }
+      },order: [
+        ["visitedNumberOfTime", "DESC"]
+    ]
+    })
+    if (findproperty) {
+      const filteredUsers = findproperty.filter((user) => {
+        let isValid = true;
+        for (key in filters) {
+          isValid = isValid && user[key] == filters[key];
+        }
+        return isValid;
       });
-      arrData.push(newData);
+      res.status(200).send({data:filteredUsers});
+    } else {
+      res.status(200).send("no listing");
     }
-    res.status(200).send({
-      data: arrData,
-    });
   } catch (error) {
     res.status(400).send({
       message: "Oops! something went wrong while fetching the users",
