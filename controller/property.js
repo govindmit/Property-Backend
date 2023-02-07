@@ -290,6 +290,78 @@ exports.findListing = async (req, res) => {
   }
 };
 
+///////////////////////////
+// exports.findListing = async (req, res) => {
+//   try {
+//     const f1 = req.query.property_purpose;
+//     const f2 = req.query.property_category;
+//     const beds = req.query.beds;
+
+//     const filters = req.query;
+//     const filt = {
+//       property_purpose: filters.property_purpose,
+//       property_type: filters.property_type,
+//       beds: filters.beds,
+//       baths: filters.baths,
+//     };
+//     const users = await Property.findAll({
+//       include: User,
+//       attributes: { exclude: ["password"] },
+//     });
+//     if (users) {
+//       const a = users.filter((user) => {
+//         let isValid = true;
+//         for (key in filt) {
+//           isValid = isValid && user[key] == filt[key];
+//         }
+//         return isValid;
+//       });
+     
+//       //rent_per_year let c=await Property.findAll()
+//       // const checkPrice=sale_value===null?sale_value:rent_per_year;
+//       let b = await Property.findAll({
+//         where: {
+//        sale_value: {
+//             [Op.lte]: filters.max,
+//             [Op.gte]: filters.min,
+//           },
+//         },
+//       });
+//       console.log('&&&&&&&&&&&&&&&&',b);
+//       // let c = await Property.findAll({
+//       //   where: {
+//       //     rent_per_year: {
+//       //       [Op.lte]: filters.max,
+//       //       [Op.gte]: filters.min,
+//       //     },
+//       //   },
+//       // });
+//       // console.log('$$$$$$$$$$$$$$',c);
+//       const result1 = a.filter(function (o1) {
+//         return b.some(function (o2) {
+//           return o1.slug == o2.slug; // slug is unnique both array object
+//         });
+//       });
+
+//       if (filters?.min === undefined) {
+//         res.status(200).send(a);
+//       } else {
+//         res.status(200).send(result1);
+//       }
+//     } else {
+//       res.status(200).send("no listing");
+//     }
+//   } catch (error) {
+//     res.status(400).send({
+//       message: "Oops! something went wrong while fetching the users",
+//       subError: error.message,
+//     });
+//   }
+// };
+
+
+/////////////////////////////
+
 exports.findPropertyById = async (req, res) => {
   try {
     const slug = req.params.slug;
